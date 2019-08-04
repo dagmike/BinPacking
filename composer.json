@@ -1,0 +1,12 @@
+{
+    "name": "dagmike/php-max-rect-bin-packing",
+    "description": "2D bin packing PHP implementation",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Michael Taylor",
+            "email": "dagmike96@gmail.com"
+        }
+    ],
+    "require": {}
+}
