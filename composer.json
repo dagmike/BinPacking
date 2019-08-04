@@ -8,5 +8,10 @@
             "email": "dagmike96@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "BinPacking\\" : "src/"
+        }
+    }
 }

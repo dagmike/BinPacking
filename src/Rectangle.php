@@ -2,7 +2,7 @@
 
 namespace BinPacking;
 
-class Rect
+class Rectangle
 {
     private $xPos;
     private $yPos;
@@ -14,6 +14,8 @@ class Rect
     {
         $this->width = $width;
         $this->height = $height;
+        $this->xPos = 0;
+        $this->yPos = 0;
     }
 
     public function getWidth() : int
@@ -21,15 +23,25 @@ class Rect
         return $this->width;
     }
 
+    public function setWidth(int $width)
+    {
+        $this->width = $width;
+    }
+
     public function getHeight() : int
     {
         return $this->height;
     }
 
+    public function setHeight(int $height)
+    {
+        $this->height = $height;
+    }
+
     public function setPosition(int $xPos, int $yPos)
     {
-        $this->xPos = $this->setX($xPos);
-        $this->yPos = $this->setY($yPos);
+        $this->setX($xPos);
+        $this->setY($yPos);
     }
 
     public function getX() : int

@@ -1,0 +1,12 @@
+version: '2'
+services:
+  php:
+    restart: always
+    image: docker.vallaton.co.uk/php-vallaton:7.3
+    expose: 
+      - "9000"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal
