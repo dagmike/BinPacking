@@ -75,12 +75,11 @@ class MaxRectsBinPack
     /**
      * Insert a rectangle for a space to be found
      *
-     * @param integer $width
-     * @param integer $height
+     * @param Rectangle $rect
      * @param string $method
      * @return Rectangle
      */
-    public function insert(int $width, int $height, string $method) : Rectangle
+    public function insert(Rectangle $rect, string $method) : ?Rectangle
     {
         $newNode = null;
 
@@ -89,7 +88,7 @@ class MaxRectsBinPack
 
         switch ($method) {
             case 'RectBottomLeftRule':
-                $newNode = $this->findPositionForNewNodeBottomLeft($width, $height, $score1, $score2);
+                $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
                 break;
 
             default:
@@ -110,9 +109,9 @@ class MaxRectsBinPack
      *
      * @param Rectangle[] $toPack
      * @param string $method
-     * @return void
+     * @return Rectangle[]
      */
-    public function insertMany(array $toPack, string $method)
+    public function insertMany(array $toPack, string $method) : array
     {
         $packed = [];
 
@@ -416,16 +415,31 @@ class MaxRectsBinPack
         return $imagick;
     }
 
+    /**
+     * Get the array of rectangles unable to pack
+     *
+     * @return Rectangle[]
+     */
     public function getCantPack() : array
     {
         return $this->cantPack;
     }
 
+    /**
+     * Get the rectangles that are "used" aka been placed in the bin
+     *
+     * @return Rectangle[]
+     */
     public function getUsedRectangles() : array
     {
         return $this->usedRectangles;
     }
 
+    /**
+     * Get the percentage of the area of the bin used
+     *
+     * @return float
+     */
     public function getUsage() : float
     {
         $usedSurfaceArea = 0;
@@ -436,6 +450,13 @@ class MaxRectsBinPack
         return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
     }
 
+    /**
+     * Helper method to figure out if one rect is within another
+     *
+     * @param Rectangle $rectA
+     * @param Rectangle $rectB
+     * @return boolean
+     */
     private static function isContainedIn(Rectangle $rectA, Rectangle $rectB) : bool
     {
         return $rectA->getX() >= $rectB->getX() && $rectA->getY() >= $rectB->getY()
