@@ -1,8 +1,7 @@
 <?php
 
 namespace BinPacking;
-
-use Exception;
+use BinPacking\Exceptions\CannotPackException;
 
 class MaxRectsBinPack
 {
@@ -45,6 +44,18 @@ class MaxRectsBinPack
      * Set maximum int for helpfulness
      */
     private const MAXINT = 9999999;
+
+    /**
+     * Array of rectangles unable to pack in the bin
+     *
+     * @var Rectangle
+     */
+    private $cantPack = [];
+
+    public function getCantPack() : array
+    {
+        return $this->cantPack;
+    }
 
     public function __construct(int $width, int $height, bool $flip = true)
     {
@@ -124,7 +135,6 @@ class MaxRectsBinPack
             for ($i = 0; $i < count($toPack); ++$i) {
                 $score1 = self::MAXINT;
                 $score2 = self::MAXINT;
-
                 $newNode = $this->scoreRect(
                     $toPack[$i]->getWidth(),
                     $toPack[$i]->getHeight(),
@@ -133,7 +143,9 @@ class MaxRectsBinPack
                     $score2
                 );
 
-                $newNode->setLabel($toPack[$i]->getLabel());
+                if ($newNode) {
+                    $newNode->setLabel($toPack[$i]->getLabel());
+                }
 
                 if ($score1 < $bestScore1 || ($score1 == $bestScore1 && $score2 < $bestScore2)) {
                     $bestScore1 = $score1;
@@ -143,14 +155,16 @@ class MaxRectsBinPack
                 }
             }
 
+            // Can't fit the rectangle
             if ($bestRectIndex == -1) {
-                return;
+                $this->cantPack = $toPack;
+                $toPack = [];
+            } else {
+                $this->placeRect($bestNode);
+                $packed[] = $bestNode;
+                unset($toPack[$bestRectIndex]);
+                $toPack = array_values($toPack);
             }
-
-            $this->placeRect($bestNode);
-            $packed[] = $bestNode;
-            unset($toPack[$bestRectIndex]);
-            $toPack = array_values($toPack);
         }
 
         return $packed;
@@ -187,7 +201,7 @@ class MaxRectsBinPack
                 throw new \InvalidArgumentException("Method {$method} not recognised.");
         }
 
-        if ($newNode->getHeight() == 0) {
+        if (!$newNode) {
             $score1 = self::MAXINT;
             $score2 = self::MAXINT;
         }
@@ -204,7 +218,7 @@ class MaxRectsBinPack
      * @param integer $bestY
      * @return Rectangle
      */
-    private function findPositionForNewNodeBottomLeft(int $width, int $height, int &$bestX, int &$bestY) : Rectangle
+    private function findPositionForNewNodeBottomLeft(int $width, int $height, int &$bestX, int &$bestY) : ?Rectangle
     {
         $bestNode = null;
         $bestX = self::MAXINT;
@@ -231,10 +245,6 @@ class MaxRectsBinPack
                     $bestX = $freeRect->getX();
                 }
             }
-        }
-
-        if (!$bestNode) {
-            throw new \Exception("Could not place block: {$width}x{$height}");
         }
 
         return $bestNode;
