@@ -126,16 +126,11 @@ class MaxRectsBinPack
                 $score1 = self::MAXINT;
                 $score2 = self::MAXINT;
                 $newNode = $this->scoreRect(
-                    $toPack[$i]->getWidth(),
-                    $toPack[$i]->getHeight(),
+                    $toPack[$i],
                     $method,
                     $score1,
                     $score2
                 );
-
-                if ($newNode) {
-                    $newNode->setLabel($toPack[$i]->getLabel());
-                }
 
                 if ($score1 < $bestScore1 || ($score1 == $bestScore1 && $score2 < $bestScore2)) {
                     $bestScore1 = $score1;
@@ -183,14 +178,24 @@ class MaxRectsBinPack
         $this->usedRectangles[] = $node;
     }
 
-    private function scoreRect(int $width, int $height, string $method, int &$score1, int &$score2)
+    /**
+     * Attempt to get a "score" for how well the rectangle is placed (based on the algorithm used)
+     *
+     * @param integer $width
+     * @param integer $height
+     * @param string $method
+     * @param integer $score1
+     * @param integer $score2
+     * @return Rectangle|null
+     */
+    private function scoreRect(Rectangle $rect, string $method, int &$score1, int &$score2) : ?Rectangle
     {
         $score1 = self::MAXINT;
         $score2 = self::MAXINT;
         
         switch ($method) {
             case 'RectBottomLeftRule':
-                $newNode = $this->findPositionForNewNodeBottomLeft($width, $height, $score1, $score2);
+                $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
                 break;
 
             default:
@@ -212,9 +217,9 @@ class MaxRectsBinPack
      * @param integer $height
      * @param integer $bestX
      * @param integer $bestY
-     * @return Rectangle
+     * @return Rectangle|null
      */
-    private function findPositionForNewNodeBottomLeft(int $width, int $height, int &$bestX, int &$bestY) : ?Rectangle
+    private function findPositionForNewNodeBottomLeft(Rectangle $rect, int &$bestX, int &$bestY) : ?Rectangle
     {
         $bestNode = null;
         $bestX = self::MAXINT;
@@ -222,20 +227,20 @@ class MaxRectsBinPack
 
         foreach ($this->freeRectangles as $freeRect) {
             // Try to place the rectangle in upright (non-flipped) orientation
-            if ($freeRect->getWidth() >= $width && $freeRect->getHeight() >= $height) {
-                $topSideY = $freeRect->getY() + $height;
+            if ($freeRect->getWidth() >= $rect->getWidth() && $freeRect->getHeight() >= $rect->getHeight()) {
+                $topSideY = $freeRect->getY() + $rect->getHeight();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = new Rectangle($width, $height);
+                    $bestNode = clone $rect;
                     $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
                     $bestY = $topSideY;
                     $bestX = $freeRect->getX();
                 }
             }
 
-            if ($this->allowFlip && $freeRect->getWidth() >= $height && $freeRect->getHeight() >= $width) {
-                $topSideY = $freeRect->getY() + $width;
+            if ($this->allowFlip && $freeRect->getWidth() >= $rect->getHeight() && $freeRect->getHeight() >= $rect->getWidth()) {
+                $topSideY = $freeRect->getY() + $rect->getWidth();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = new Rectangle($height, $width);
+                    $bestNode = clone $rect;
                     $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
                     $bestY = $topSideY;
                     $bestX = $freeRect->getX();
@@ -305,6 +310,14 @@ class MaxRectsBinPack
             }
         }
 
+        // Check if the used node has a window
+        if (get_class($usedNode) == "BinPacking\WindowedRectangle") {
+            $newNode = clone $usedNode->getWindow();
+            $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder());
+            $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder());
+            $this->freeRectangles[] = $newNode;
+        }
+
         return true;
     }
 
@@ -345,6 +358,7 @@ class MaxRectsBinPack
         $draw = new \ImagickDraw();
         $strokeColour = new \ImagickPixel('rgb(0, 0, 0)');
         $cutStrokeColour = new \ImagickPixel('rgb(255, 0, 0)');
+        $freeStrokeColour = new \ImagickPixel('rgb(0, 0, 255)');
         $fillColour = new \ImagickPixel('rgb(255, 255, 255)');
 
         $draw->setStrokeColor($cutStrokeColour);
@@ -369,10 +383,28 @@ class MaxRectsBinPack
             );
         }
 
+        $draw->setStrokeDashArray([null]);
+        $draw->setStrokeDashOffset(0);
+        $draw->setStrokeColor($freeStrokeColour);
+        foreach ($this->freeRectangles as $rect) {
+            $topLeftX = $margin + $rect->getX();
+            $topLeftY = $margin + $this->binHeight - $rect->getY() - $rect->getHeight();
+            $bottomRightX = $topLeftX + $rect->getWidth();
+            $bottomRightY = $topLeftY + $rect->getHeight();
+
+            $draw->rectangle(
+                $topLeftX,
+                $topLeftY,
+                $bottomRightX,
+                $bottomRightY
+            );
+        }
+
         $draw->setStrokeColor($strokeColour);
 
         $draw->setFillOpacity(0);
         $draw->setStrokeDashArray([null]);
+        $draw->setStrokeWidth(1);
         $draw->rectangle($margin, $margin, $this->binWidth + $margin, $this->binHeight + $margin);
 
         $imagick = new \Imagick();

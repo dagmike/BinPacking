@@ -2,29 +2,51 @@
 
 require_once '../vendor/autoload.php';
 
-use BinPacking\{MaxRectsBinPack, Rectangle};
+use BinPacking\{MaxRectsBinPack, Rectangle, WindowedRectangle};
 
 $binWidth = 500;
 $binHeight = 500;
 $bins = [];
 
+// $toPack = [
+//     new Rectangle(100, 100),
+//     new Rectangle(100, 100),
+//     new Rectangle(200, 200),
+//     new Rectangle(100, 100),
+//     new Rectangle(50, 400),
+//     new Rectangle(100, 200),
+//     new Rectangle(350, 150),
+//     new Rectangle(100, 200),
+//     new Rectangle(100, 100),
+//     new Rectangle(100, 100),
+//     new Rectangle(200, 200),
+//     new Rectangle(100, 100),
+//     new Rectangle(50, 400),
+//     new Rectangle(100, 200),
+//     new Rectangle(350, 150),
+//     new Rectangle(100, 200)
+// ];
+
 $toPack = [
-    new Rectangle(100, 100, 'A'),
-    new Rectangle(100, 100, 'B'),
-    new Rectangle(200, 200, 'C'),
-    new Rectangle(100, 100, 'D'),
-    new Rectangle(50, 400, 'E'),
-    new Rectangle(100, 200, 'F'),
-    new Rectangle(350, 150),
-    new Rectangle(100, 200),
-    new Rectangle(100, 100, 'A'),
-    new Rectangle(100, 100, 'B'),
-    new Rectangle(200, 200, 'C'),
-    new Rectangle(100, 100, 'D'),
-    new Rectangle(50, 400, 'E'),
-    new Rectangle(100, 200, 'F'),
-    new Rectangle(350, 150),
-    new Rectangle(100, 200)
+    new WindowedRectangle(300, 300, 100, 100),
+    new Rectangle(200, 200),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45),
+    new Rectangle(45, 45)
 ];
 
 // While there are still things to pack, attempt to pack them

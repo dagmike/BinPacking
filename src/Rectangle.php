@@ -33,19 +33,17 @@ class Rectangle
     private $height;
 
     /**
-     * Label for this rectangle
+     * Construct the rectangle
      *
-     * @var string
+     * @param integer $width Outer width of the rectangle
+     * @param integer $height Outer height of the rectangle
      */
-    private $label;
-
-    public function __construct(int $width, int $height, string $label = null)
+    public function __construct(int $width, int $height)
     {
         $this->width = $width;
         $this->height = $height;
         $this->xPos = 0;
         $this->yPos = 0;
-        $this->label = $label;
     }
 
     public function getWidth() : int
@@ -92,15 +90,5 @@ class Rectangle
     public function setY(int $yPos)
     {
         $this->yPos = $yPos;
-    }
-
-    public function getLabel() : ?string
-    {
-        return $this->label;
-    }
-
-    public function setLabel(string $label = null)
-    {
-        $this->label = $label;
     }
 }
