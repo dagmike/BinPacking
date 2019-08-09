@@ -1,7 +1,6 @@
 <?php
 
 namespace BinPacking;
-use BinPacking\Exceptions\CannotPackException;
 
 class MaxRectsBinPack
 {
@@ -48,15 +47,17 @@ class MaxRectsBinPack
     /**
      * Array of rectangles unable to pack in the bin
      *
-     * @var Rectangle
+     * @var Rectangle[]
      */
     private $cantPack = [];
 
-    public function getCantPack() : array
-    {
-        return $this->cantPack;
-    }
-
+    /**
+     * Construct the bin for packing into
+     *
+     * @param integer $width  Width of the bin
+     * @param integer $height Height of the bin
+     * @param boolean $flip   Allow rotation of the items to pack
+     */
     public function __construct(int $width, int $height, bool $flip = true)
     {
         $this->binWidth = $width;
@@ -95,28 +96,17 @@ class MaxRectsBinPack
                 throw new \InvalidArgumentException("Method {$method} not recognised.");
         }
 
-        if ($newNode->getHeight() === 0) {
+        if (!$newNode) {
             return $newNode;
         }
 
-        $numRectsToProcess = count($this->freeRectangles);
-        for ($i = 0; $i < $numRectsToProcess; ++$i) {
-            if ($this->splitFreeNode($this->freeRectangles[$i], $newNode)) {
-                unset($this->freeRectangles[$i]);
-                $this->freeRectangles = array_values($this->freeRectangles);
-                --$i;
-                --$numRectsToProcess;
-            }
-        }
+        $this->placeRect($newNode);
 
-        $this->pruneFreeList();
-
-        $this->usedRectangles[] = $newNode;
         return $newNode;
     }
 
     /**
-     * Undocumented function
+     * Insert multiple rectangles at once (trying to find the best fit)
      *
      * @param Rectangle[] $toPack
      * @param string $method
@@ -170,6 +160,12 @@ class MaxRectsBinPack
         return $packed;
     }
 
+    /**
+     * Place the rectangle in the bin
+     *
+     * @param Rectangle $node
+     * @return void
+     */
     private function placeRect(Rectangle &$node)
     {
         $numRectsToProcess = count($this->freeRectangles);
@@ -342,15 +338,16 @@ class MaxRectsBinPack
     /**
      * Output the algorithm result to a file
      *
-     * @return void
+     * @return \Imagick
      */
-    public function drawBin(string $filename)
+    public function getVisualization() : \Imagick
     {
         $draw = new \ImagickDraw();
         $strokeColour = new \ImagickPixel('rgb(0, 0, 0)');
+        $cutStrokeColour = new \ImagickPixel('rgb(255, 0, 0)');
         $fillColour = new \ImagickPixel('rgb(255, 255, 255)');
 
-        $draw->setStrokeColor($strokeColour);
+        $draw->setStrokeColor($cutStrokeColour);
         $draw->setFillColor($fillColour);
         $draw->setStrokeWidth(1);
         $draw->setStrokeDashArray([5]);
@@ -372,19 +369,39 @@ class MaxRectsBinPack
             );
         }
 
+        $draw->setStrokeColor($strokeColour);
+
         $draw->setFillOpacity(0);
         $draw->setStrokeDashArray([null]);
         $draw->rectangle($margin, $margin, $this->binWidth + $margin, $this->binHeight + $margin);
 
         $imagick = new \Imagick();
         $imagick->newImage($this->binWidth + ($margin * 2), $this->binHeight + ($margin * 2), $fillColour);
-        $imagick->setImageFormat("png");
 
+        $imagick->setImageFormat("png");
         $imagick->drawImage($draw);
 
-        $data = $imagick->getImageBlob();
+        return $imagick;
+    }
 
-        file_put_contents("viz-{$filename}.png", $data);
+    public function getCantPack() : array
+    {
+        return $this->cantPack;
+    }
+
+    public function getUsedRectangles() : array
+    {
+        return $this->usedRectangles;
+    }
+
+    public function getUsage() : float
+    {
+        $usedSurfaceArea = 0;
+        foreach ($this->usedRectangles as $usedRect) {
+            $usedSurfaceArea += $usedRect->getWidth() * $usedRect->getHeight();
+        }
+
+        return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
     }
 
     private static function isContainedIn(Rectangle $rectA, Rectangle $rectB) : bool
