@@ -105,6 +105,97 @@ class MaxRectsBinPack
     }
 
     /**
+     * Undocumented function
+     *
+     * @param Rectangle[] $toPack
+     * @param string $method
+     * @return void
+     */
+    public function insertMany(array $toPack, string $method)
+    {
+        $packed = [];
+
+        while (count($toPack) > 0) {
+            $bestScore1 = self::MAXINT;
+            $bestScore2 = self::MAXINT;
+            $bestRectIndex = -1;
+            $bestNode = null;
+
+            for ($i = 0; $i < count($toPack); ++$i) {
+                $score1 = self::MAXINT;
+                $score2 = self::MAXINT;
+
+                $newNode = $this->scoreRect(
+                    $toPack[$i]->getWidth(),
+                    $toPack[$i]->getHeight(),
+                    $method,
+                    $score1,
+                    $score2
+                );
+
+                $newNode->setLabel($toPack[$i]->getLabel());
+
+                if ($score1 < $bestScore1 || ($score1 == $bestScore1 && $score2 < $bestScore2)) {
+                    $bestScore1 = $score1;
+                    $bestScore2 = $score2;
+                    $bestNode = $newNode;
+                    $bestRectIndex = $i;
+                }
+            }
+
+            if ($bestRectIndex == -1) {
+                return;
+            }
+
+            $this->placeRect($bestNode);
+            $packed[] = $bestNode;
+            unset($toPack[$bestRectIndex]);
+            $toPack = array_values($toPack);
+        }
+
+        return $packed;
+    }
+
+    private function placeRect(Rectangle &$node)
+    {
+        $numRectsToProcess = count($this->freeRectangles);
+        for ($i = 0; $i < $numRectsToProcess; ++$i) {
+            if ($this->splitFreeNode($this->freeRectangles[$i], $node)) {
+                unset($this->freeRectangles[$i]);
+                $this->freeRectangles = array_values($this->freeRectangles);
+                --$i;
+                --$numRectsToProcess;
+            }
+        }
+
+        $this->pruneFreeList();
+
+        $this->usedRectangles[] = $node;
+    }
+
+    private function scoreRect(int $width, int $height, string $method, int &$score1, int &$score2)
+    {
+        $score1 = self::MAXINT;
+        $score2 = self::MAXINT;
+        
+        switch ($method) {
+            case 'RectBottomLeftRule':
+                $newNode = $this->findPositionForNewNodeBottomLeft($width, $height, $score1, $score2);
+                break;
+
+            default:
+                throw new \InvalidArgumentException("Method {$method} not recognised.");
+        }
+
+        if ($newNode->getHeight() == 0) {
+            $score1 = self::MAXINT;
+            $score2 = self::MAXINT;
+        }
+
+        return $newNode;
+    }
+
+    /**
      * Bottom left algorithm (max rectangles)
      *
      * @param integer $width
