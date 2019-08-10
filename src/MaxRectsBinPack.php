@@ -435,14 +435,17 @@ class MaxRectsBinPack
         $freeStrokeColour = new \ImagickPixel('rgb(0, 0, 255)');
         $fillColour = new \ImagickPixel('rgb(255, 255, 255)');
 
+        $margin = 10;
+
+        $imagick = new \Imagick();
+        $imagick->newImage($this->binWidth + ($margin * 2), $this->binHeight + ($margin * 2), $fillColour);
+
         $draw->setStrokeColor($cutStrokeColour);
         $draw->setFillColor($fillColour);
         $draw->setStrokeWidth(1);
         $draw->setStrokeDashArray([5]);
         $draw->setStrokeDashOffset(5);
 
-        $margin = 10;
-        
         foreach ($this->usedRectangles as $rect) {
             $topLeftX = $margin + $rect->getX();
             $topLeftY = $margin + $this->binHeight - $rect->getY() - $rect->getHeight();
@@ -489,9 +492,6 @@ class MaxRectsBinPack
         $draw->setStrokeDashArray([null]);
         $draw->setStrokeWidth(1);
         $draw->rectangle($margin, $margin, $this->binWidth + $margin, $this->binHeight + $margin);
-
-        $imagick = new \Imagick();
-        $imagick->newImage($this->binWidth + ($margin * 2), $this->binHeight + ($margin * 2), $fillColour);
 
         $imagick->setImageFormat("png");
         $imagick->drawImage($draw);
