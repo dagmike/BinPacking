@@ -4,8 +4,8 @@ require_once '../vendor/autoload.php';
 
 use BinPacking\{MaxRectsBinPack, Rectangle, WindowedRectangle};
 
-$binWidth = 500;
-$binHeight = 500;
+$binWidth = 1120;
+$binHeight = 815;
 $bins = [];
 
 // $toPack = [
@@ -28,25 +28,26 @@ $bins = [];
 // ];
 
 $toPack = [
-    new WindowedRectangle(300, 300, 100, 100),
-    new Rectangle(200, 200),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45),
-    new Rectangle(45, 45)
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50),
+    new WindowedRectangle(250, 250, 50, 50)
 ];
 
 // While there are still things to pack, attempt to pack them
@@ -55,7 +56,7 @@ while (!empty($toPack)) {
     $bins[] = new MaxRectsBinPack($binWidth, $binHeight, true);
     // Loop through all bins to try to fit what is left to pack
     foreach ($bins as $bin) {
-        $bin->insertMany($toPack, 'RectBottomLeftRule');
+        $bin->insertMany($toPack, 'RectBestAreaFit');
         // Get what cannot be packed back and continue
         $toPack = $bin->getCantPack();
     }

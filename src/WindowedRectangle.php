@@ -26,6 +26,11 @@ class WindowedRectangle extends Rectangle
     private $leftBorder;
 
     /**
+     * Border from the window that cannot be used
+     */
+    public const INNERBORDER = 15;
+
+    /**
      * Construct the windowed rectangle
      *
      * @param int $width Outer width of the rectangle
@@ -62,7 +67,7 @@ class WindowedRectangle extends Rectangle
             $windowHeight = $height - (2 * $this->bottomBorder);
         }
 
-        $this->window = new Rectangle($windowWidth, $windowHeight);
+        $this->window = new Rectangle($windowWidth - (2 * self::INNERBORDER), $windowHeight - (2 * self::INNERBORDER));
     }
 
     /**
@@ -93,5 +98,25 @@ class WindowedRectangle extends Rectangle
     public function getLeftBorder() : int
     {
         return $this->leftBorder;
+    }
+
+    /**
+     * Get the top border
+     *
+     * @return int
+     */
+    public function getTopBorder() : int
+    {
+        return $this->topBorder ?? $this->bottomBorder;
+    }
+
+    /**
+     * Get the right border
+     *
+     * @return int
+     */
+    public function getRightBorder() : int
+    {
+        return $this->rightBorder ?? $this->leftBorder;
     }
 }

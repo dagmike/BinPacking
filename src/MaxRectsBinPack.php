@@ -52,10 +52,20 @@ class MaxRectsBinPack
     private $cantPack = [];
 
     /**
+     * Bottom border of the bin that cannot be used
+     */
+    private const BOTTOMBORDER = 24;
+
+    /**
+     * Left border of thebin that cannot be used
+     */
+    private const LEFTBORDER = 24;
+
+    /**
      * Construct the bin for packing into
      *
-     * @param integer $width  Width of the bin
-     * @param integer $height Height of the bin
+     * @param int $width  Width of the bin
+     * @param int $height Height of the bin
      * @param boolean $flip   Allow rotation of the items to pack
      */
     public function __construct(int $width, int $height, bool $flip = true)
@@ -65,8 +75,8 @@ class MaxRectsBinPack
         $this->allowFlip = $flip;
 
         // Create free rectangle
-        $initialFree = new Rectangle($width, $height);
-        $initialFree->setPosition(0, 0);
+        $initialFree = new Rectangle($width - self::LEFTBORDER, $height - self::BOTTOMBORDER);
+        $initialFree->setPosition(self::LEFTBORDER, self::BOTTOMBORDER);
 
         $this->usedRectangles = [];
         $this->freeRectangles = [$initialFree];
@@ -89,6 +99,10 @@ class MaxRectsBinPack
         switch ($method) {
             case 'RectBottomLeftRule':
                 $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
+                break;
+
+            case 'RectBestAreaFit':
+                $newNode = $this->findPostionForNewNodeBestAreaFit($rect, $score1, $score2);
                 break;
 
             default:
@@ -115,6 +129,7 @@ class MaxRectsBinPack
     {
         $packed = [];
 
+        // die(var_dump($toPack));
         while (count($toPack) > 0) {
             $bestScore1 = self::MAXINT;
             $bestScore2 = self::MAXINT;
@@ -180,11 +195,11 @@ class MaxRectsBinPack
     /**
      * Attempt to get a "score" for how well the rectangle is placed (based on the algorithm used)
      *
-     * @param integer $width
-     * @param integer $height
+     * @param int $width
+     * @param int $height
      * @param string $method
-     * @param integer $score1
-     * @param integer $score2
+     * @param int $score1
+     * @param int $score2
      * @return Rectangle|null
      */
     private function scoreRect(Rectangle $rect, string $method, int &$score1, int &$score2) : ?Rectangle
@@ -195,6 +210,10 @@ class MaxRectsBinPack
         switch ($method) {
             case 'RectBottomLeftRule':
                 $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
+                break;
+
+            case 'RectBestAreaFit':
+                $newNode = $this->findPostionForNewNodeBestAreaFit($rect, $score1, $score2);
                 break;
 
             default:
@@ -210,12 +229,68 @@ class MaxRectsBinPack
     }
 
     /**
+     * Best area fit algorithm (max rectangles)
+     *
+     * @param Rectangle $rect
+     * @param int $bestAreaFit
+     * @param int $bestShortSideFit
+     * @return Rectangle|null
+     */
+    private function findPostionForNewNodeBestAreaFit(
+        Rectangle $rect,
+        int &$bestAreaFit,
+        int &$bestShortSideFit
+    ) : ?Rectangle {
+        $bestNode = null;
+        $bestAreaFit = self::MAXINT;
+        $bestShortSideFit = self::MAXINT;
+
+        foreach ($this->freeRectangles as $freeRect) {
+            $areaFit = ($freeRect->getWidth() * $freeRect->getHeight()) - ($rect->getWidth() * $rect->getHeight());
+
+            if ($freeRect->getWidth() >= $rect->getWidth() && $freeRect->getHeight() >= $rect->getHeight()) {
+                $leftoverHoriz = abs($freeRect->getWidth() - $rect->getWidth());
+                $leftoverVert = abs($freeRect->getHeight() - $rect->getHeight());
+                $shortSideFit = min($leftoverHoriz, $leftoverVert);
+
+                if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
+                    $bestNode = clone $rect;
+                    $bestNode->setX($freeRect->getX());
+                    $bestNode->setY($freeRect->getY());
+
+                    $bestShortSideFit = $shortSideFit;
+                    $bestAreaFit = $areaFit;
+                }
+            }
+
+            if ($this->allowFlip && $freeRect->getWidth() >= $rect->getHeight() && $freeRect->getHeight() >= $rect->getWidth()) {
+                $leftoverHoriz = abs($freeRect->getWidth() - $rect->getHeight());
+                $leftoverVert = abs($freeRect->getHeight() - $rect->getWidth());
+                $shortSideFit = min($leftoverHoriz, $leftoverVert);
+
+                if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
+                    $bestNode = clone $rect;
+                    $bestNode->setX($freeRect->getX());
+                    $bestNode->setY($freeRect->getY());
+                    $bestNode->setWidth($rect->getHeight());
+                    $bestNode->setHeight($rect->getWidth());
+
+                    $bestShortSideFit = $shortSideFit;
+                    $bestAreaFit = $areaFit;
+                }
+            }
+        }
+
+        return $bestNode;
+    }
+
+    /**
      * Bottom left algorithm (max rectangles)
      *
-     * @param integer $width
-     * @param integer $height
-     * @param integer $bestX
-     * @param integer $bestY
+     * @param int $width
+     * @param int $height
+     * @param int $bestX
+     * @param int $bestY
      * @return Rectangle|null
      */
     private function findPositionForNewNodeBottomLeft(Rectangle $rect, int &$bestX, int &$bestY) : ?Rectangle
@@ -312,8 +387,8 @@ class MaxRectsBinPack
         // Check if the used node has a window
         if (get_class($usedNode) == "BinPacking\WindowedRectangle") {
             $newNode = clone $usedNode->getWindow();
-            $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder());
-            $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder());
+            $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder() + WindowedRectangle::INNERBORDER);
+            $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder() + WindowedRectangle::INNERBORDER);
             $this->freeRectangles[] = $newNode;
         }
 
@@ -380,6 +455,15 @@ class MaxRectsBinPack
                 $bottomRightX,
                 $bottomRightY
             );
+
+            if (get_class($rect) == "BinPacking\WindowedRectangle") {
+                $draw->rectangle(
+                    $topLeftX + $rect->getLeftBorder(),
+                    $topLeftY + $rect->getTopBorder(),
+                    $bottomRightX - $rect->getRightBorder(),
+                    $bottomRightY - $rect->getBottomBorder()
+                );
+            }
         }
 
         $draw->setStrokeDashArray([null]);
