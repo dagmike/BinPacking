@@ -6,6 +6,8 @@ use BinPacking\Rectangle;
 
 class RectangleHelper
 {
+    public const MAXINT = 99999999;
+
     /**
      * Check if the first rectangle is within the second rectangle
      *

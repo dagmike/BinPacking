@@ -3,8 +3,9 @@
 namespace BinPacking\Algorithms;
 
 use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\Helpers\RectangleHelper;
 
-class BottomLeft implements AlgorithmInterface
+class BottomLeft
 {
     public static function findNewPosition(
         RectangleBinPack $bin,
@@ -13,8 +14,8 @@ class BottomLeft implements AlgorithmInterface
         int &$bestX
     ) : ?Rectangle {
         $bestNode = null;
-        $bestX = self::MAXINT;
-        $bestY = self::MAXINT;
+        $bestX = RectangleHelper::MAXINT;
+        $bestY = RectangleHelper::MAXINT;
 
         foreach ($bin->getFreeRectangles() as $freeRect) {
             // Try to place the rectangle in upright (non-flipped) orientation

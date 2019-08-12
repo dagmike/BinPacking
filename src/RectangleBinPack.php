@@ -43,11 +43,6 @@ class RectangleBinPack
     private $freeRectangles;
 
     /**
-     * Set maximum int for helpfulness
-     */
-    private const MAXINT = 9999999;
-
-    /**
      * Array of rectangles unable to pack in the bin
      *
      * @var Rectangle[]
@@ -86,6 +81,81 @@ class RectangleBinPack
     }
 
     /**
+     * Get the width of the bin
+     *
+     * @return integer
+     */
+    public function getBinWidth() : int
+    {
+        return $this->binWidth;
+    }
+
+    /**
+     * Get the height of the bin
+     *
+     * @return integer
+     */
+    public function getBinHeight() : int
+    {
+        return $this->binHeight;
+    }
+
+    /**
+     * Get whether the rectangles can be flipped or not
+     *
+     * @return boolean
+     */
+    public function isFlipAllowed() : bool
+    {
+        return $this->allowFlip;
+    }
+
+    /**
+     * Get the array of rectangles unable to pack
+     *
+     * @return Rectangle[]
+     */
+    public function getCantPack() : array
+    {
+        return $this->cantPack;
+    }
+
+    /**
+     * Get the rectangles that are "used" aka been placed in the bin
+     *
+     * @return Rectangle[]
+     */
+    public function getUsedRectangles() : array
+    {
+        return $this->usedRectangles;
+    }
+
+    /**
+     * Get the rectangles that have not been used
+     *
+     * @return Rectangle[]
+     */
+    public function getFreeRectangles() : array
+    {
+        return $this->freeRectangles;
+    }
+
+    /**
+     * Get the percentage of the area of the bin used
+     *
+     * @return float
+     */
+    public function getUsage() : float
+    {
+        $usedSurfaceArea = 0;
+        foreach ($this->usedRectangles as $usedRect) {
+            $usedSurfaceArea += $usedRect->getWidth() * $usedRect->getHeight();
+        }
+
+        return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
+    }
+
+    /**
      * Insert a rectangle for a space to be found
      *
      * @param Rectangle $rect
@@ -96,8 +166,8 @@ class RectangleBinPack
     {
         $newNode = null;
 
-        $score1 = self::MAXINT;
-        $score2 = self::MAXINT;
+        $score1 = RectangleHelper::MAXINT;
+        $score2 = RectangleHelper::MAXINT;
 
         switch ($method) {
             case 'RectBottomLeftRule':
@@ -134,14 +204,14 @@ class RectangleBinPack
 
         // die(var_dump($toPack));
         while (count($toPack) > 0) {
-            $bestScore1 = self::MAXINT;
-            $bestScore2 = self::MAXINT;
+            $bestScore1 = RectangleHelper::MAXINT;
+            $bestScore2 = RectangleHelper::MAXINT;
             $bestRectIndex = -1;
             $bestNode = null;
 
             for ($i = 0; $i < count($toPack); ++$i) {
-                $score1 = self::MAXINT;
-                $score2 = self::MAXINT;
+                $score1 = RectangleHelper::MAXINT;
+                $score2 = RectangleHelper::MAXINT;
                 $newNode = $this->scoreRect(
                     $toPack[$i],
                     $method,
@@ -207,8 +277,8 @@ class RectangleBinPack
      */
     private function scoreRect(Rectangle $rect, string $method, int &$score1, int &$score2) : ?Rectangle
     {
-        $score1 = self::MAXINT;
-        $score2 = self::MAXINT;
+        $score1 = RectangleHelper::MAXINT;
+        $score2 = RectangleHelper::MAXINT;
         
         switch ($method) {
             case 'RectBottomLeftRule':
@@ -224,108 +294,11 @@ class RectangleBinPack
         }
 
         if (!$newNode) {
-            $score1 = self::MAXINT;
-            $score2 = self::MAXINT;
+            $score1 = RectangleHelper::MAXINT;
+            $score2 = RectangleHelper::MAXINT;
         }
 
         return $newNode;
-    }
-
-    /**
-     * Best area fit algorithm (max rectangles)
-     *
-     * @param Rectangle $rect
-     * @param int $bestAreaFit
-     * @param int $bestShortSideFit
-     * @return Rectangle|null
-     */
-    private function findPostionForNewNodeBestAreaFit(
-        Rectangle $rect,
-        int &$bestAreaFit,
-        int &$bestShortSideFit
-    ) : ?Rectangle {
-        $bestNode = null;
-        $bestAreaFit = self::MAXINT;
-        $bestShortSideFit = self::MAXINT;
-
-        foreach ($this->freeRectangles as $freeRect) {
-            $areaFit = ($freeRect->getWidth() * $freeRect->getHeight()) - ($rect->getWidth() * $rect->getHeight());
-
-            if ($freeRect->getWidth() >= $rect->getWidth() && $freeRect->getHeight() >= $rect->getHeight()) {
-                $leftoverHoriz = abs($freeRect->getWidth() - $rect->getWidth());
-                $leftoverVert = abs($freeRect->getHeight() - $rect->getHeight());
-                $shortSideFit = min($leftoverHoriz, $leftoverVert);
-
-                if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
-                    $bestNode = clone $rect;
-                    $bestNode->setX($freeRect->getX());
-                    $bestNode->setY($freeRect->getY());
-
-                    $bestShortSideFit = $shortSideFit;
-                    $bestAreaFit = $areaFit;
-                }
-            }
-
-            if ($this->allowFlip && $freeRect->getWidth() >= $rect->getHeight() && $freeRect->getHeight() >= $rect->getWidth()) {
-                $leftoverHoriz = abs($freeRect->getWidth() - $rect->getHeight());
-                $leftoverVert = abs($freeRect->getHeight() - $rect->getWidth());
-                $shortSideFit = min($leftoverHoriz, $leftoverVert);
-
-                if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
-                    $bestNode = clone $rect;
-                    $bestNode->setX($freeRect->getX());
-                    $bestNode->setY($freeRect->getY());
-                    $bestNode->setWidth($rect->getHeight());
-                    $bestNode->setHeight($rect->getWidth());
-
-                    $bestShortSideFit = $shortSideFit;
-                    $bestAreaFit = $areaFit;
-                }
-            }
-        }
-
-        return $bestNode;
-    }
-
-    /**
-     * Bottom left algorithm (max rectangles)
-     *
-     * @param int $width
-     * @param int $height
-     * @param int $bestX
-     * @param int $bestY
-     * @return Rectangle|null
-     */
-    private function findPositionForNewNodeBottomLeft(Rectangle $rect, int &$bestX, int &$bestY) : ?Rectangle
-    {
-        $bestNode = null;
-        $bestX = self::MAXINT;
-        $bestY = self::MAXINT;
-
-        foreach ($this->freeRectangles as $freeRect) {
-            // Try to place the rectangle in upright (non-flipped) orientation
-            if ($freeRect->getWidth() >= $rect->getWidth() && $freeRect->getHeight() >= $rect->getHeight()) {
-                $topSideY = $freeRect->getY() + $rect->getHeight();
-                if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = clone $rect;
-                    $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
-                    $bestY = $topSideY;
-                    $bestX = $freeRect->getX();
-                }
-            }
-
-            if ($this->allowFlip && $freeRect->getWidth() >= $rect->getHeight() && $freeRect->getHeight() >= $rect->getWidth()) {
-                $topSideY = $freeRect->getY() + $rect->getWidth();
-                if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = clone $rect;
-                    $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
-                    $bestY = $topSideY;
-                    $bestX = $freeRect->getX();
-                }
-            }
-        }
-
-        return $bestNode;
     }
 
     /**
@@ -423,80 +396,5 @@ class RectangleBinPack
                 }
             }
         }
-    }
-
-    /**
-     * Get the width of the bin
-     *
-     * @return integer
-     */
-    public function getBinWidth() : int
-    {
-        return $this->binWidth;
-    }
-
-    /**
-     * Get the height of the bin
-     *
-     * @return integer
-     */
-    public function getBinHeight() : int
-    {
-        return $this->binHeight;
-    }
-
-    /**
-     * Get whether the rectangles can be flipped or not
-     *
-     * @return boolean
-     */
-    public function isFlipAllowed() : bool
-    {
-        return $this->allowFlip;
-    }
-
-    /**
-     * Get the array of rectangles unable to pack
-     *
-     * @return Rectangle[]
-     */
-    public function getCantPack() : array
-    {
-        return $this->cantPack;
-    }
-
-    /**
-     * Get the rectangles that are "used" aka been placed in the bin
-     *
-     * @return Rectangle[]
-     */
-    public function getUsedRectangles() : array
-    {
-        return $this->usedRectangles;
-    }
-
-    /**
-     * Get the rectangles that have not been used
-     *
-     * @return Rectangle[]
-     */
-    public function getFreeRectangles() : array
-    {
-        return $this->freeRectangles;
-    }
-
-    /**
-     * Get the percentage of the area of the bin used
-     *
-     * @return float
-     */
-    public function getUsage() : float
-    {
-        $usedSurfaceArea = 0;
-        foreach ($this->usedRectangles as $usedRect) {
-            $usedSurfaceArea += $usedRect->getWidth() * $usedRect->getHeight();
-        }
-
-        return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
     }
 }

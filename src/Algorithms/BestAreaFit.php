@@ -3,8 +3,9 @@
 namespace BinPacking\Algorithms;
 
 use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\Helpers\RectangleHelper;
 
-class BestAreaFit implements AlgorithmInterface
+class BestAreaFit
 {
     public static function findNewPosition(
         RectangleBinPack $bin,
@@ -13,8 +14,8 @@ class BestAreaFit implements AlgorithmInterface
         int &$bestShortSideFit
     ) : ?Rectangle {
         $bestNode = null;
-        $bestAreaFit = self::MAXINT;
-        $bestShortSideFit = self::MAXINT;
+        $bestAreaFit = RectangleHelper::MAXINT;
+        $bestShortSideFit = RectangleHelper::MAXINT;
 
         foreach ($bin->getFreeRectangles() as $freeRect) {
             $areaFit = ($freeRect->getWidth() * $freeRect->getHeight()) - ($rectangle->getWidth() * $rectangle->getHeight());
