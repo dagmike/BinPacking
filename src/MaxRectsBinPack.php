@@ -405,14 +405,14 @@ class MaxRectsBinPack
         
         for ($i = 0; $i < count($this->freeRectangles); ++$i) {
             for ($j = $i + 1; $j < count($this->freeRectangles); ++$j) {
-                if (self::isContainedIn($this->freeRectangles[$i], $this->freeRectangles[$j])) {
+                if (RectangleHelper::isContainedIn($this->freeRectangles[$i], $this->freeRectangles[$j])) {
                     unset($this->freeRectangles[$i]);
                     $this->freeRectangles = array_values($this->freeRectangles);
                     --$i;
                     break;
                 }
 
-                if (self::isContainedIn($this->freeRectangles[$j], $this->freeRectangles[$i])) {
+                if (RectangleHelper::isContainedIn($this->freeRectangles[$j], $this->freeRectangles[$i])) {
                     unset($this->freeRectangles[$j]);
                     $this->freeRectangles = array_values($this->freeRectangles);
                     --$j;
@@ -532,19 +532,5 @@ class MaxRectsBinPack
         }
 
         return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
-    }
-
-    /**
-     * Helper method to figure out if one rect is within another
-     *
-     * @param Rectangle $rectA
-     * @param Rectangle $rectB
-     * @return boolean
-     */
-    private static function isContainedIn(Rectangle $rectA, Rectangle $rectB) : bool
-    {
-        return $rectA->getX() >= $rectB->getX() && $rectA->getY() >= $rectB->getY()
-            && $rectA->getX() + $rectA->getWidth() <= $rectB->getX() + $rectB->getWidth()
-            && $rectA->getY() + $rectA->getHeight() <= $rectB->getY() + $rectB->getHeight();
     }
 }
