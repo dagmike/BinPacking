@@ -1,5 +1,5 @@
 {
-    "name": "dagmike/php-max-rect-bin-packing",
+    "name": "dagmike/BinPacking",
     "description": "2D bin packing PHP implementation",
     "type": "library",
     "authors": [
