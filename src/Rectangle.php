@@ -62,7 +62,7 @@ class Rectangle
      * @param integer $width
      * @return void
      */
-    public function setWidth(int $width)
+    public function setWidth(int $width) : void
     {
         $this->width = $width;
     }
@@ -70,7 +70,7 @@ class Rectangle
     /**
      * Get the height of the rectangle
      *
-     * @return int
+     * @return integer
      */
     public function getHeight() : int
     {
@@ -83,7 +83,7 @@ class Rectangle
      * @param integer $height
      * @return void
      */
-    public function setHeight(int $height)
+    public function setHeight(int $height) : void
     {
         $this->height = $height;
     }
@@ -95,7 +95,7 @@ class Rectangle
      * @param int $yPos
      * @return void
      */
-    public function setPosition(int $xPos, int $yPos)
+    public function setPosition(int $xPos, int $yPos) : void
     {
         $this->setX($xPos);
         $this->setY($yPos);
@@ -104,7 +104,7 @@ class Rectangle
     /**
      * Get the X coordinate
      *
-     * @return int
+     * @return integer
      */
     public function getX() : int
     {
@@ -117,7 +117,7 @@ class Rectangle
      * @param integer $xPos
      * @return void
      */
-    public function setX(int $xPos)
+    public function setX(int $xPos) : void
     {
         $this->xPos = $xPos;
     }
@@ -125,7 +125,7 @@ class Rectangle
     /**
      * Get the Y coordinate
      *
-     * @return int
+     * @return integer
      */
     public function getY() : int
     {
@@ -138,7 +138,7 @@ class Rectangle
      * @param integer $yPos
      * @return void
      */
-    public function setY(int $yPos)
+    public function setY(int $yPos) : void
     {
         $this->yPos = $yPos;
     }

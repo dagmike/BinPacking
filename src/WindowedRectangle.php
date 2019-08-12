@@ -83,7 +83,7 @@ class WindowedRectangle extends Rectangle
     /**
      * Get the bottom border
      *
-     * @return int
+     * @return integer
      */
     public function getBottomBorder() : int
     {
@@ -93,7 +93,7 @@ class WindowedRectangle extends Rectangle
     /**
      * Get the left border
      *
-     * @return int
+     * @return integer
      */
     public function getLeftBorder() : int
     {
@@ -103,7 +103,7 @@ class WindowedRectangle extends Rectangle
     /**
      * Get the top border
      *
-     * @return int
+     * @return integer
      */
     public function getTopBorder() : int
     {
@@ -113,7 +113,7 @@ class WindowedRectangle extends Rectangle
     /**
      * Get the right border
      *
-     * @return int
+     * @return integer
      */
     public function getRightBorder() : int
     {

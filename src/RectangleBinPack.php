@@ -2,7 +2,10 @@
 
 namespace BinPacking;
 
-class MaxRectsBinPack
+use BinPacking\Algorithms\{BestAreaFit, BottomLeft};
+use BinPacking\Helpers\RectangleHelper;
+
+class RectangleBinPack
 {
     /**
      * Width of the bin to pack into
@@ -98,11 +101,11 @@ class MaxRectsBinPack
 
         switch ($method) {
             case 'RectBottomLeftRule':
-                $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
+                $newNode = BottomLeft::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             case 'RectBestAreaFit':
-                $newNode = $this->findPostionForNewNodeBestAreaFit($rect, $score1, $score2);
+                $newNode = BestAreaFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             default:
@@ -209,11 +212,11 @@ class MaxRectsBinPack
         
         switch ($method) {
             case 'RectBottomLeftRule':
-                $newNode = $this->findPositionForNewNodeBottomLeft($rect, $score1, $score2);
+                $newNode = BottomLeft::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             case 'RectBestAreaFit':
-                $newNode = $this->findPostionForNewNodeBestAreaFit($rect, $score1, $score2);
+                $newNode = BestAreaFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             default:
@@ -400,7 +403,7 @@ class MaxRectsBinPack
      *
      * @return void
      */
-    private function pruneFreeList()
+    private function pruneFreeList() : void
     {
         
         for ($i = 0; $i < count($this->freeRectangles); ++$i) {
@@ -421,82 +424,35 @@ class MaxRectsBinPack
             }
         }
     }
-    
+
     /**
-     * Output the algorithm result to a file
+     * Get the width of the bin
      *
-     * @return \Imagick
+     * @return integer
      */
-    public function getVisualization() : \Imagick
+    public function getBinWidth() : int
     {
-        $draw = new \ImagickDraw();
-        $strokeColour = new \ImagickPixel('rgb(0, 0, 0)');
-        $cutStrokeColour = new \ImagickPixel('rgb(255, 0, 0)');
-        $freeStrokeColour = new \ImagickPixel('rgb(0, 0, 255)');
-        $fillColour = new \ImagickPixel('rgb(255, 255, 255)');
+        return $this->binWidth;
+    }
 
-        $margin = 10;
+    /**
+     * Get the height of the bin
+     *
+     * @return integer
+     */
+    public function getBinHeight() : int
+    {
+        return $this->binHeight;
+    }
 
-        $imagick = new \Imagick();
-        $imagick->newImage($this->binWidth + ($margin * 2), $this->binHeight + ($margin * 2), $fillColour);
-
-        $draw->setStrokeColor($cutStrokeColour);
-        $draw->setFillColor($fillColour);
-        $draw->setStrokeWidth(1);
-        $draw->setStrokeDashArray([5]);
-        $draw->setStrokeDashOffset(5);
-
-        foreach ($this->usedRectangles as $rect) {
-            $topLeftX = $margin + $rect->getX();
-            $topLeftY = $margin + $this->binHeight - $rect->getY() - $rect->getHeight();
-            $bottomRightX = $topLeftX + $rect->getWidth();
-            $bottomRightY = $topLeftY + $rect->getHeight();
-
-            $draw->rectangle(
-                $topLeftX,
-                $topLeftY,
-                $bottomRightX,
-                $bottomRightY
-            );
-
-            if (get_class($rect) == "BinPacking\WindowedRectangle") {
-                $draw->rectangle(
-                    $topLeftX + $rect->getLeftBorder(),
-                    $topLeftY + $rect->getTopBorder(),
-                    $bottomRightX - $rect->getRightBorder(),
-                    $bottomRightY - $rect->getBottomBorder()
-                );
-            }
-        }
-
-        $draw->setStrokeDashArray([null]);
-        $draw->setStrokeDashOffset(0);
-        $draw->setStrokeColor($freeStrokeColour);
-        foreach ($this->freeRectangles as $rect) {
-            $topLeftX = $margin + $rect->getX();
-            $topLeftY = $margin + $this->binHeight - $rect->getY() - $rect->getHeight();
-            $bottomRightX = $topLeftX + $rect->getWidth();
-            $bottomRightY = $topLeftY + $rect->getHeight();
-
-            $draw->rectangle(
-                $topLeftX,
-                $topLeftY,
-                $bottomRightX,
-                $bottomRightY
-            );
-        }
-
-        $draw->setStrokeColor($strokeColour);
-
-        $draw->setFillOpacity(0);
-        $draw->setStrokeDashArray([null]);
-        $draw->setStrokeWidth(1);
-        $draw->rectangle($margin, $margin, $this->binWidth + $margin, $this->binHeight + $margin);
-
-        $imagick->setImageFormat("png");
-        $imagick->drawImage($draw);
-
-        return $imagick;
+    /**
+     * Get whether the rectangles can be flipped or not
+     *
+     * @return boolean
+     */
+    public function isFlipAllowed() : bool
+    {
+        return $this->allowFlip;
     }
 
     /**
@@ -517,6 +473,16 @@ class MaxRectsBinPack
     public function getUsedRectangles() : array
     {
         return $this->usedRectangles;
+    }
+
+    /**
+     * Get the rectangles that have not been used
+     *
+     * @return Rectangle[]
+     */
+    public function getFreeRectangles() : array
+    {
+        return $this->freeRectangles;
     }
 
     /**

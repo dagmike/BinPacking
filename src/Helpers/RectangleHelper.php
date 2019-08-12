@@ -1,6 +1,8 @@
 <?php
 
-namespace BinPacking;
+namespace BinPacking\Helpers;
+
+use BinPacking\Rectangle;
 
 class RectangleHelper
 {
