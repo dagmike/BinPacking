@@ -66,13 +66,6 @@ class WindowedRectangle extends Rectangle
             $windowHeight = $height - (2 * $this->bottomBorder);
         }
 
-        // die(var_dump([
-        //     'outerWidth' => $this->width,
-        //     'otherHeight' => $this->height,
-        //     'innerWidth' => $windowWidth - (2 * self::INNERBORDER),
-        //     'innerHeight' => $windowHeight - (2 * self::INNERBORDER)
-        // ]));
-
         $this->window = new Rectangle($windowWidth - (2 * self::INNERBORDER), $windowHeight - (2 * self::INNERBORDER));
     }
 

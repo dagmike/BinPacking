@@ -22,8 +22,6 @@ $toPack = [
     new Rectangle(100, 150)
 ];
 
-// die(var_dump($toPack));
-
 // While there are still things to pack, attempt to pack them
 while (!empty($toPack)) {
     // Create a new bin
@@ -38,7 +36,6 @@ while (!empty($toPack)) {
 
 // Draw each of the bins
 foreach ($bins as $key => $bin) {
-    // die(var_dump($bin->getFreeRectangles()));
     $image = VisualisationHelper::generateVisualisation($bin);
     $data = $image->getImageBlob();
     file_put_contents("viz-{$key}.png", $data);
