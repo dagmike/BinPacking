@@ -10,16 +10,16 @@ $binHeight = 815;
 $bins = [];
 
 $toPack = [
+    new WindowedRectangle(450, 250, 100, 50, 100, 50),
+    new WindowedRectangle(450, 250, 100, 50, 100, 50),
     new WindowedRectangle(450, 250, 50, 50, 50, 50),
     new WindowedRectangle(450, 250, 50, 50, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50, 50, 50),
-    new Rectangle(100, 150),
-    new Rectangle(100, 150),
-    new Rectangle(100, 150),
-    new Rectangle(100, 150),
-    new Rectangle(100, 150),
-    new Rectangle(100, 150)
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(100, 100),
+    new Rectangle(75, 75),
+    new Rectangle(75, 75),
 ];
 
 // While there are still things to pack, attempt to pack them

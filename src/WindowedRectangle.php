@@ -129,7 +129,14 @@ class WindowedRectangle extends Rectangle
         parent::rotate();
      
         $this->window->rotate();
-        $this->bottomBorder = $this->getLeftBorder();
-        $this->leftBorder = $this->getBottomBorder();
+        $newBottomBorder = $this->getRightBorder();
+        $newLeftBorder = $this->getBottomBorder();
+        $newTopBorder = $this->getLeftBorder();
+        $newRightBorder = $this->getTopBorder();
+
+        $this->bottomBorder = $newBottomBorder;
+        $this->leftBorder = $newLeftBorder;
+        $this->topBorder = $newTopBorder;
+        $this->rightBorder = $newRightBorder;
     }
 }
