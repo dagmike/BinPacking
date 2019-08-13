@@ -189,6 +189,9 @@ class RectangleBinPack
         $usedSurfaceArea = 0;
         foreach ($this->usedRectangles as $usedRect) {
             $usedSurfaceArea += $usedRect->getWidth() * $usedRect->getHeight();
+            if (get_class($usedRect) == 'BinPacking\WindowedRectangle') {
+                $usedSurfaceArea -= $usedRect->getWindow()->getWidth() * $usedRect->getWindow()->getHeight();
+            }
         }
 
         return $usedSurfaceArea / ($this->binWidth * $this->binHeight);
