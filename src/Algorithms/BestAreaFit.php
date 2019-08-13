@@ -3,6 +3,7 @@
 namespace BinPacking\Algorithms;
 
 use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
 class BestAreaFit
@@ -26,7 +27,7 @@ class BestAreaFit
                 $shortSideFit = min($leftoverHoriz, $leftoverVert);
 
                 if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
-                    $bestNode = clone $rectangle;
+                    $bestNode = RectangleFactory::fromRectangle($rectangle);
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
 
@@ -41,7 +42,7 @@ class BestAreaFit
                 $shortSideFit = min($leftoverHoriz, $leftoverVert);
 
                 if ($areaFit < $bestAreaFit || ($areaFit == $bestAreaFit && $shortSideFit < $bestShortSideFit)) {
-                    $bestNode = clone $rectangle;
+                    $bestNode = RectangleFactory::fromRectangle($rectangle);
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
                     $bestNode->rotate();

@@ -128,7 +128,7 @@ class WindowedRectangle extends Rectangle
     public function rotate() : void
     {
         parent::rotate();
-        
+     
         $this->window->rotate();
     }
 }

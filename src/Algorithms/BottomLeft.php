@@ -3,6 +3,7 @@
 namespace BinPacking\Algorithms;
 
 use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
 class BottomLeft
@@ -22,7 +23,7 @@ class BottomLeft
             if ($freeRect->getWidth() >= $rectangle->getWidth() && $freeRect->getHeight() >= $rectangle->getHeight()) {
                 $topSideY = $freeRect->getY() + $rectangle->getHeight();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = clone $rectangle;
+                    $bestNode = RectangleFactory::fromRectangle($rectangle);
                     $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
                     $bestY = $topSideY;
                     $bestX = $freeRect->getX();
@@ -32,7 +33,7 @@ class BottomLeft
             if ($bin->isFlipAllowed() && $freeRect->getWidth() >= $rectangle->getHeight() && $freeRect->getHeight() >= $rectangle->getWidth()) {
                 $topSideY = $freeRect->getY() + $rectangle->getWidth();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
-                    $bestNode = clone $rectangle;
+                    $bestNode = RectangleFactory::fromRectangle($rectangle);
                     $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
                     $bestY = $topSideY;
                     $bestX = $freeRect->getX();

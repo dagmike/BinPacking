@@ -153,7 +153,7 @@ class Rectangle
         $newWidth = $this->height;
         $newHeight = $this->width;
 
-        $this->height = $newWidth;
-        $this->width = $newHeight;
+        $this->height = $newHeight;
+        $this->width = $newWidth;
     }
 }

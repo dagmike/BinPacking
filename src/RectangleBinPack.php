@@ -3,6 +3,7 @@
 namespace BinPacking;
 
 use BinPacking\Algorithms\{BestAreaFit, BottomLeft};
+use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
 class RectangleBinPack
@@ -360,14 +361,14 @@ class RectangleBinPack
             // New node at the top side of the used node.
             if ($usedNode->getY() > $freeNode->getY()
                 && $usedNode->getY() < ($freeNode->getY() + $freeNode->getHeight())) {
-                $newNode = clone $freeNode;
+                $newNode = RectangleFactory::fromRectangle($freeNode);
                 $newNode->setHeight($usedNode->getY() - $newNode->getY());
                 $this->freeRectangles[] = $newNode;
             }
 
             // New node at the bottom side of the used node.
             if (($usedNode->getY() + $usedNode->getHeight()) < ($freeNode->getY() + $freeNode->getHeight())) {
-                $newNode = clone $freeNode;
+                $newNode = RectangleFactory::fromRectangle($freeNode);
                 $newNode->setY($usedNode->getY() + $usedNode->getHeight());
                 $newNode->setHeight(
                     ($freeNode->getY() + $freeNode->getHeight()) - ($usedNode->getY() + $usedNode->getHeight())
@@ -381,14 +382,14 @@ class RectangleBinPack
             // New node at the left side of the used node.
             if ($usedNode->getX() > $freeNode->getX()
                 && $usedNode->getX() < ($freeNode->getX() + $freeNode->getWidth())) {
-                $newNode = clone $freeNode;
+                $newNode = RectangleFactory::fromRectangle($freeNode);
                 $newNode->setWidth($usedNode->getX() - $newNode->getX());
                 $this->freeRectangles[] = $newNode;
             }
 
             // New node at the right side of the used node.
             if (($usedNode->getX() + $usedNode->getWidth()) < ($freeNode->getX() + $freeNode->getWidth())) {
-                $newNode = clone $freeNode;
+                $newNode = RectangleFactory::fromRectangle($freeNode);
                 $newNode->setX($usedNode->getX() + $usedNode->getWidth());
                 $newNode->setWidth(
                     ($freeNode->getX() + $freeNode->getWidth()) - ($usedNode->getX() + $usedNode->getWidth())
@@ -399,15 +400,9 @@ class RectangleBinPack
 
         // Check if the used node has a window
         if (get_class($usedNode) == "BinPacking\WindowedRectangle") {
-            $newNode = clone $usedNode->getWindow();
+            $newNode = RectangleFactory::fromRectangle($usedNode->getWindow());
             $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder() + WindowedRectangle::INNERBORDER);
             $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder() + WindowedRectangle::INNERBORDER);
-
-            $newWindow = clone $usedNode->getWindow();
-            $newWindow->setX($newNode->getX() - WindowedRectangle::INNERBORDER);
-            $newWindow->setY($newNode->getY() - WindowedRectangle::INNERBORDER);
-            $newWindow->setWidth($newNode->getWidth() + (WindowedRectangle::INNERBORDER * 2));
-            $newWindow->setHeight($newNode->getHeight() + (WindowedRectangle::INNERBORDER * 2));
 
             $this->freeRectangles[] = $newNode;
         }
