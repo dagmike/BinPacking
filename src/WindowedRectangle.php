@@ -45,11 +45,10 @@ class WindowedRectangle extends Rectangle
         int $height,
         int $bottomBorder,
         int $leftBorder,
-        int $topBorder = null,
-        int $rightBorder = null
+        int $topBorder,
+        int $rightBorder
     ) {
         parent::__construct($width, $height);
-        
         $this->bottomBorder = $bottomBorder;
         $this->leftBorder = $leftBorder;
         $this->topBorder = $topBorder;
@@ -66,6 +65,13 @@ class WindowedRectangle extends Rectangle
         } else {
             $windowHeight = $height - (2 * $this->bottomBorder);
         }
+
+        // die(var_dump([
+        //     'outerWidth' => $this->width,
+        //     'otherHeight' => $this->height,
+        //     'innerWidth' => $windowWidth - (2 * self::INNERBORDER),
+        //     'innerHeight' => $windowHeight - (2 * self::INNERBORDER)
+        // ]));
 
         $this->window = new Rectangle($windowWidth - (2 * self::INNERBORDER), $windowHeight - (2 * self::INNERBORDER));
     }
@@ -130,5 +136,7 @@ class WindowedRectangle extends Rectangle
         parent::rotate();
      
         $this->window->rotate();
+        $this->bottomBorder = $this->getLeftBorder();
+        $this->leftBorder = $this->getBottomBorder();
     }
 }

@@ -23,14 +23,14 @@ class Rectangle
      *
      * @var int
      */
-    private $width;
+    protected $width;
 
     /**
      * Height of the rectangle
      *
      * @var int
      */
-    private $height;
+    protected $height;
 
     /**
      * Construct the rectangle

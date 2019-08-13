@@ -10,34 +10,19 @@ $binHeight = 815;
 $bins = [];
 
 $toPack = [
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100)
+    new WindowedRectangle(450, 250, 50, 50, 50, 50),
+    new WindowedRectangle(450, 250, 50, 50, 50, 50),
+    new WindowedRectangle(450, 250, 50, 50, 50, 50),
+    new WindowedRectangle(450, 250, 50, 50, 50, 50),
+    new Rectangle(100, 150),
+    new Rectangle(100, 150),
+    new Rectangle(100, 150),
+    new Rectangle(100, 150),
+    new Rectangle(100, 150),
+    new Rectangle(100, 150)
 ];
+
+// die(var_dump($toPack));
 
 // While there are still things to pack, attempt to pack them
 while (!empty($toPack)) {
@@ -53,6 +38,7 @@ while (!empty($toPack)) {
 
 // Draw each of the bins
 foreach ($bins as $key => $bin) {
+    // die(var_dump($bin->getFreeRectangles()));
     $image = VisualisationHelper::generateVisualisation($bin);
     $data = $image->getImageBlob();
     file_put_contents("viz-{$key}.png", $data);

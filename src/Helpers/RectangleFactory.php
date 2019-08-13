@@ -14,7 +14,9 @@ class RectangleFactory
                 $rectangle->getWidth(),
                 $rectangle->getHeight(),
                 $rectangle->getBottomBorder(),
-                $rectangle->getLeftBorder()
+                $rectangle->getLeftBorder(),
+                $rectangle->getTopBorder(),
+                $rectangle->getRightBorder()
             );
         } else {
             $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight());
