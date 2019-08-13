@@ -2,7 +2,7 @@
 
 namespace BinPacking;
 
-use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft};
+use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft, BestShortSideFit};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -217,6 +217,14 @@ class RectangleBinPack
                 $newNode = BestAreaFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
+            case 'RectBestLongSideFit':
+                $newNode = BestLongSideFit::findNewPosition($this, $rect, $score1, $score2);
+                break;
+
+            case 'RectBestShortSideFit':
+                $newNode = BestShortSideFit::findNewPosition($this, $rect, $score1, $score2);
+                break;
+
             default:
                 throw new \InvalidArgumentException("Method {$method} not recognised.");
         }
@@ -329,6 +337,10 @@ class RectangleBinPack
 
             case 'RectBestLongSideFit':
                 $newNode = BestLongSideFit::findNewPosition($this, $rect, $score1, $score2);
+                break;
+
+            case 'RectBestShortSideFit':
+                $newNode = BestShortSideFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             default:
