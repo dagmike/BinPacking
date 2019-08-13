@@ -44,9 +44,8 @@ class BestAreaFit
                     $bestNode = clone $rectangle;
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
-                    $bestNode->setWidth($rectangle->getHeight());
-                    $bestNode->setHeight($rectangle->getWidth());
-
+                    $bestNode->rotate();
+                             
                     $bestShortSideFit = $shortSideFit;
                     $bestAreaFit = $areaFit;
                 }

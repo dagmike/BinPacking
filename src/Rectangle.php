@@ -142,4 +142,18 @@ class Rectangle
     {
         $this->yPos = $yPos;
     }
+
+    /**
+     * Rotate the rectangle
+     *
+     * @return void
+     */
+    public function rotate() : void
+    {
+        $newWidth = $this->height;
+        $newHeight = $this->width;
+
+        $this->height = $newWidth;
+        $this->width = $newHeight;
+    }
 }

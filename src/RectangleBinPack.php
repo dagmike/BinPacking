@@ -240,7 +240,6 @@ class RectangleBinPack
     {
         $packed = [];
 
-        // die(var_dump($toPack));
         while (count($toPack) > 0) {
             $bestScore1 = RectangleHelper::MAXINT;
             $bestScore2 = RectangleHelper::MAXINT;
@@ -286,7 +285,7 @@ class RectangleBinPack
      * @param Rectangle $node
      * @return void
      */
-    private function placeRect(Rectangle &$node)
+    private function placeRect(Rectangle $node)
     {
         $numRectsToProcess = count($this->freeRectangles);
         for ($i = 0; $i < $numRectsToProcess; ++$i) {
@@ -346,7 +345,7 @@ class RectangleBinPack
      * @param Rectangle $usedNode
      * @return boolean
      */
-    private function splitFreeNode(Rectangle $freeNode, Rectangle &$usedNode) : bool
+    private function splitFreeNode(Rectangle $freeNode, Rectangle $usedNode) : bool
     {
         // Test with SAT if the rectangles even intersect
         if ($usedNode->getX() >= ($freeNode->getX() + $freeNode->getWidth())
@@ -403,6 +402,13 @@ class RectangleBinPack
             $newNode = clone $usedNode->getWindow();
             $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder() + WindowedRectangle::INNERBORDER);
             $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder() + WindowedRectangle::INNERBORDER);
+
+            $newWindow = clone $usedNode->getWindow();
+            $newWindow->setX($newNode->getX() - WindowedRectangle::INNERBORDER);
+            $newWindow->setY($newNode->getY() - WindowedRectangle::INNERBORDER);
+            $newWindow->setWidth($newNode->getWidth() + (WindowedRectangle::INNERBORDER * 2));
+            $newWindow->setHeight($newNode->getHeight() + (WindowedRectangle::INNERBORDER * 2));
+
             $this->freeRectangles[] = $newNode;
         }
 

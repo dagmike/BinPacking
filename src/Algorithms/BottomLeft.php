@@ -36,6 +36,7 @@ class BottomLeft
                     $bestNode->setPosition($freeRect->getX(), $freeRect->getY());
                     $bestY = $topSideY;
                     $bestX = $freeRect->getX();
+                    $bestNode->rotate();
                 }
             }
         }

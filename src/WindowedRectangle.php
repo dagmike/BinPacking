@@ -119,4 +119,16 @@ class WindowedRectangle extends Rectangle
     {
         return $this->rightBorder ?? $this->leftBorder;
     }
+
+    /**
+     * Rotate the rectangle and the window
+     *
+     * @return void
+     */
+    public function rotate() : void
+    {
+        parent::rotate();
+        
+        $this->window->rotate();
+    }
 }
