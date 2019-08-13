@@ -35,7 +35,7 @@ $toPack = [
 // While there are still things to pack, attempt to pack them
 while (!empty($toPack)) {
     // Create a new bin
-    $bins[] = new RectangleBinPack($binWidth, $binHeight, true);
+    $bins[] = (new RectangleBinPack($binWidth, $binHeight, true))->init();
     // Loop through all bins to try to fit what is left to pack
     foreach ($bins as $bin) {
         $bin->insertMany($toPack, 'RectBestAreaFit');

@@ -52,12 +52,12 @@ class RectangleBinPack
     /**
      * Bottom border of the bin that cannot be used
      */
-    private const BOTTOMBORDER = 24;
+    private $bottomBorder;
 
     /**
      * Left border of thebin that cannot be used
      */
-    private const LEFTBORDER = 24;
+    private $leftBorder;
 
     /**
      * Construct the bin for packing into
@@ -72,12 +72,50 @@ class RectangleBinPack
         $this->binHeight = $height;
         $this->allowFlip = $flip;
 
-        // Create free rectangle
-        $initialFree = new Rectangle($width - self::LEFTBORDER, $height - self::BOTTOMBORDER);
-        $initialFree->setPosition(self::LEFTBORDER, self::BOTTOMBORDER);
+        $this->bottomBorder = 0;
+        $this->leftBorder = 0;
 
         $this->usedRectangles = [];
+        $this->freeRectangles = [];
+    }
+
+    /**
+     * Initialize the free bins to pack into
+     *
+     * @return void
+     */
+    public function init() : RectangleBinPack
+    {
+        // Create free rectangle
+        $initialFree = new Rectangle($this->binWidth - $this->leftBorder, $this->binHeight - $this->bottomBorder);
+        $initialFree->setPosition($this->leftBorder, $this->bottomBorder);
+
         $this->freeRectangles = [$initialFree];
+        return $this;
+    }
+
+    /**
+     * Set the bottom border of the sheet (that cannot be but)
+     *
+     * @param integer $bottomBorder
+     * @return RectangleBinPack
+     */
+    public function setBottomBorder(int $bottomBorder) : RectangleBinPack
+    {
+        $this->bottomBorder = $bottomBorder;
+        return $this;
+    }
+
+    /**
+     * Set the left border of the sheet that cannot be cut
+     *
+     * @param integer $leftBorder
+     * @return RectangleBinPack
+     */
+    public function setLeftBorder(int $leftBorder) : RectangleBinPack
+    {
+        $this->leftBorder = $leftBorder;
+        return $this;
     }
 
     /**
