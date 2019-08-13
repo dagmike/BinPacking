@@ -28,7 +28,7 @@ while (!empty($toPack)) {
     $bins[] = (new RectangleBinPack($binWidth, $binHeight, true))->init();
     // Loop through all bins to try to fit what is left to pack
     foreach ($bins as $bin) {
-        $bin->insertMany($toPack, 'RectBestAreaFit');
+        $bin->insertMany($toPack, 'RectBestLongSideFit');
         // Get what cannot be packed back and continue
         $toPack = $bin->getCantPack();
     }

@@ -2,7 +2,7 @@
 
 namespace BinPacking;
 
-use BinPacking\Algorithms\{BestAreaFit, BottomLeft};
+use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -325,6 +325,10 @@ class RectangleBinPack
 
             case 'RectBestAreaFit':
                 $newNode = BestAreaFit::findNewPosition($this, $rect, $score1, $score2);
+                break;
+
+            case 'RectBestLongSideFit':
+                $newNode = BestLongSideFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             default:
