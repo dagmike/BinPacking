@@ -6,7 +6,7 @@ This repository is a port of the 2D bin packing algorithms found here: [juj/Rect
 You can install the package via composer:
 
 ```bash
-composer require dagmike/BinPacking
+composer require dagmike/bin-packing
 ```
 
 ## Usage

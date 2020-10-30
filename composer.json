@@ -1,14 +1,21 @@
 {
-    "name": "dagmike/BinPacking",
+    "name": "dagmike/bin-packing",
     "description": "2D bin packing PHP implementation",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Michael Taylor",
             "email": "dagmike96@gmail.com"
+        },
+        {
+            "name": "Shawn Welch",
+            "email": "101164+shrimpwagon@users.noreply.github.com"
         }
     ],
-    "require": {},
+    "require": {
+        "php": ">=5.6"
+    },
     "autoload": {
         "psr-4": {
             "BinPacking\\" : "src/"
