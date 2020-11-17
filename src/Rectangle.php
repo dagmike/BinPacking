@@ -33,17 +33,33 @@ class Rectangle
     protected $height;
 
     /**
+     * Label of the rectangle when visualised
+     *
+     * @var string
+     */
+    protected $label;
+
+    /**
+     * Indicates whether the rotate function was called
+     *
+     * @var bool
+     */
+    protected $isRotated = false;
+
+    /**
      * Construct the rectangle
      *
      * @param integer $width Outer width of the rectangle
      * @param integer $height Outer height of the rectangle
      */
-    public function __construct(int $width, int $height)
+    public function __construct(int $width, int $height, string $label = null, $data = null)
     {
         $this->width = $width;
         $this->height = $height;
         $this->xPos = 0;
         $this->yPos = 0;
+        $this->label = $label;
+        $this->data = $data;
     }
 
     /**
@@ -144,6 +160,58 @@ class Rectangle
     }
 
     /**
+     * Get the label
+     *
+     * @return string
+     */
+    public function getLabel() : ?string
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set the label
+     *
+     * @param string $label
+     * @return void
+     */
+    public function setLabel(string $label) : void
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * Get the extra data about this rect
+     *
+     * @return array
+     */
+    public function getData() : ?array
+    {
+        return $this->data;
+    }
+
+    /**
+     * Set the extra data about this rect
+     *
+     * @param array $data
+     * @return void
+     */
+    public function setData(array $data) : void
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * Returns whether the rotate function was used
+     *
+     * @return bool
+     */
+    public function getIsRotated() : bool
+    {
+        return $this->isRotated;
+    }
+
+    /**
      * Rotate the rectangle
      *
      * @return void
@@ -155,5 +223,6 @@ class Rectangle
 
         $this->height = $newHeight;
         $this->width = $newWidth;
+        $this->isRotated = true;
     }
 }

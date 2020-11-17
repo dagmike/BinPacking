@@ -3,6 +3,7 @@
 namespace BinPacking\Helpers;
 
 use BinPacking\Rectangle;
+use BinPacking\RectangleWithMargin;
 use BinPacking\WindowedRectangle;
 
 class RectangleFactory
@@ -16,10 +17,20 @@ class RectangleFactory
                 $rectangle->getBottomBorder(),
                 $rectangle->getLeftBorder(),
                 $rectangle->getTopBorder(),
-                $rectangle->getRightBorder()
+                $rectangle->getRightBorder(),
+                $rectangle->getIsHollow(),
+                $rectangle->getLabel(),
+                $rectangle->getData()
+            );
+        } else if (get_class($rectangle) == 'BinPacking\RectangleWithMargin') {
+            $rect = new RectangleWithMargin(
+                $rectangle->getWidth(),
+                $rectangle->getHeight(),
+                $rectangle->getLabel(),
+                $rectangle->getMargin()
             );
         } else {
-            $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight());
+            $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight(), $rectangle->getLabel(), $rectangle->getData());
         }
 
         $rect->setX($rectangle->getX());

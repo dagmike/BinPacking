@@ -10,16 +10,32 @@ class VisualisationHelper
      * Create an Imagick object of a bin
      *
      * @param RectangleBinPack $bin
+     * @param array $opts
      * @return \Imagick
      */
-    public static function generateVisualisation(RectangleBinPack $bin) : \Imagick
+    public static function generateVisualisation(RectangleBinPack $bin, $opts = []) : \Imagick
     {
         $draw = new \ImagickDraw();
-        $strokeColour = new \ImagickPixel('rgb(0, 0, 0)');
-        $cutStrokeColour = new \ImagickPixel('rgb(255, 0, 0)');
-        $freeStrokeColour = new \ImagickPixel('rgb(0, 0, 255)');
-        $fillColour = new \ImagickPixel('rgb(255, 255, 255)');
+        $strokeColour = new \ImagickPixel('black');
+        $cutStrokeColour = new \ImagickPixel('red');
+        $freeStrokeColour = new \ImagickPixel('blue');
+        $fillColour = new \ImagickPixel('white');
 
+        $textDraw = new \ImagickDraw();
+        $textStrokeColour = new \ImagickPixel('rgb(0, 0, 0)');
+        $textFillColour = new \ImagickPixel('rgb(0, 0, 0)');
+        $textDraw->setStrokeColor($textStrokeColour);
+        $textDraw->setFillColor($textFillColour);
+        if (isset($opts['font'])) {
+            $draw->setFont($opts['font']);
+        }
+        if (isset($opts['fontSize'])) {
+            $draw->setFontSize($opts['fontSize']);
+        }
+
+        $draw->setGravity(\Imagick::GRAVITY_CENTER); //NORTH); //GRAVITY_NORTHWEST);
+        $cx = $bin->getBinWidth() / 2;
+        $cy = $bin->getBinHeight() / 2;
         $margin = 10;
 
         $imagick = new \Imagick();
@@ -52,11 +68,27 @@ class VisualisationHelper
                     $bottomRightY - $rect->getBottomBorder()
                 );
             }
+
+            $label = $rect->getLabel();
+            if ($label != null) {
+                $tx = $topLeftX + (($bottomRightX -$topLeftX) / 2) - $cx; // - 60;
+                $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy; // - 60;
+                // set font color
+                if (isset($opts['fontColour'])) {
+                    $draw->setStrokeColor(new \ImagickPixel($opts['fontColour']));
+                    $draw->setFillColor(new \ImagickPixel($opts['fontColour']));
+                }
+                $draw->annotation($tx, $ty, $label);
+                // reset stroke and fill color
+                $draw->setStrokeColor($cutStrokeColour);
+                $draw->setFillColor($fillColour);
+
+            }
         }
 
-        $draw->setStrokeDashArray([null]);
-        $draw->setStrokeDashOffset(0);
         $draw->setStrokeColor($freeStrokeColour);
+        $draw->setFillColor('gray');
+        $draw->setFillOpacity(0.1);
         foreach ($bin->getFreeRectangles() as $rect) {
             $topLeftX = $margin + $rect->getX();
             $topLeftY = $margin + $bin->getBinHeight() - $rect->getY() - $rect->getHeight();
@@ -76,7 +108,7 @@ class VisualisationHelper
         $draw->setFillOpacity(0);
         $draw->setStrokeDashArray([null]);
         $draw->setStrokeWidth(1);
-        $draw->rectangle($margin, $margin, $bin->getBinWidth() + $margin, $bin->getBinHeight() + $margin);
+        // $draw->rectangle($margin, $margin, $bin->getBinWidth() + $margin, $bin->getBinHeight() + $margin);
 
         $imagick->setImageFormat("png");
         $imagick->drawImage($draw);
