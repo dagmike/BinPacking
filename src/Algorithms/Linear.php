@@ -19,7 +19,7 @@ class Linear
         $bestY = RectangleHelper::MAXINT;
 
         $bestNode = RectangleFactory::fromRectangle($rectangle);
-        if ($rectangle->getWidth() > $rectangle->getHeight()) {
+        if ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight()) {
             $bestNode->rotate();
         }
 
