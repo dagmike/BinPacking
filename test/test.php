@@ -5,21 +5,21 @@ require_once '../vendor/autoload.php';
 use BinPacking\{RectangleBinPack, Rectangle, WindowedRectangle};
 use BinPacking\Helpers\VisualisationHelper;
 
-$binWidth = 1120;
-$binHeight = 815;
+$binWidth = 500;
+$binHeight = 500;
 $bins = [];
 
 $toPack = [
-    new WindowedRectangle(450, 250, 100, 50, 100, 50),
-    new WindowedRectangle(450, 250, 100, 50, 100, 50),
-    new WindowedRectangle(450, 250, 50, 50, 50, 50),
-    new WindowedRectangle(450, 250, 50, 50, 50, 50),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(100, 100),
-    new Rectangle(75, 75),
-    new Rectangle(75, 75),
+    new WindowedRectangle(450, 250, 100, 50, 100, 50, false, "I am number 1\nYay", [ 'id' => 1 ]),
+    new WindowedRectangle(450, 250, 100, 50, 100, 50, false, "I am number 2\nYay", [ 'id' => 2 ]),
+    new WindowedRectangle(450, 250, 50, 50, 50, 50, false, "I am number 3\nYay", [ 'id' => 3 ]),
+    new WindowedRectangle(450, 250, 50, 50, 50, 50, false, "I am number 4\nYay", [ 'id' => 4 ]),
+    new Rectangle(100, 100, "I am number 5\nYay", [ 'id' => 5 ]),
+    new Rectangle(100, 300, "I am number 6\nYay", [ 'id' => 6 ]),
+    new Rectangle(100, 100, "I am number 7\nYay", [ 'id' => 7 ]),
+    new Rectangle(400, 100, "I am number 8\nYay", [ 'id' => 8 ]),
+    new Rectangle(375, 275, "I am number 9\nYay", [ 'id' => 9 ]),
+    new Rectangle(275, 375, "I am number 10\nYay", [ 'id' => 10 ]),
 ];
 
 // While there are still things to pack, attempt to pack them
@@ -39,6 +39,12 @@ foreach ($bins as $key => $bin) {
     $image = VisualisationHelper::generateVisualisation($bin);
     $data = $image->getImageBlob();
     file_put_contents("viz-{$key}.png", $data);
+
+    echo "Dumping rects for bin $key...\n";
+    $used = $bin->getUsedRectangles();
+    foreach ($used as $rec) {
+        echo "Item ({$rec->getWidth()}x{$rec->getHeight()}) at position ({$rec->getX()}, {$rec->getY()}) has data: " . json_encode($rec->getData()) . "\n";
+    }
 }
 
 echo "\n";

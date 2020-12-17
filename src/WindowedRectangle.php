@@ -46,6 +46,9 @@ class WindowedRectangle extends Rectangle
      * @param int $leftBorder Margin from the left of the outer rect
      * @param int|null $topBorder Margin from the top of the outer rect
      * @param int|null $rightBorder Margin from the right of the outer rect
+     * @param bool $isHollow Should the algorithm consider the inside portion of this rect to allow other rects to pack into it?
+     * @param string $label String to render in the center of the rect (may contain "\n" for multiline)
+     * @param array $data Arbitrary data you can examine later to identify packed rects
      */
     public function __construct(
         int $width,

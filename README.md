@@ -14,7 +14,7 @@ composer require dagmike/bin-packing
 use BinPacking\RectangleBinPack;
 use BinPacking\Rectangle;
 
-$bin = new RectangleBinPack(1000, 1000);
+$bin = (new RectangleBinPack(1000, 1000))->init();
 
 $packed = $bin->insert(new Rectangle(100, 100), "RectBestAreaFit");
 
@@ -31,3 +31,4 @@ if ($packed) {
     * Best Area Fit - RectBestAreaFit
     * Best Short Side Fit - RectBestShortSideFit
     * Best Long Side Fit - RectBestLongSideFit
+    * Linear - RectLinear

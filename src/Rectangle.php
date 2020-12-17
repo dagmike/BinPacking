@@ -51,6 +51,8 @@ class Rectangle
      *
      * @param integer $width Outer width of the rectangle
      * @param integer $height Outer height of the rectangle
+     * @param string $label String to render in the center of the rect (may contain "\n" for multiline)
+     * @param array $data Arbitrary data you can examine later to identify packed rects
      */
     public function __construct(int $width, int $height, string $label = null, $data = null)
     {
