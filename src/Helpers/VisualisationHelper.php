@@ -32,6 +32,7 @@ class VisualisationHelper
         if (isset($opts['fontSize'])) {
             $draw->setFontSize($opts['fontSize']);
         }
+        $labelMargin = isset($opts['labelMargin']) ? $opts['labelMargin'] : 20;
 
         $draw->setGravity(\Imagick::GRAVITY_CENTER); //NORTH); //GRAVITY_NORTHWEST);
         $cx = $bin->getBinWidth() / 2;
@@ -71,13 +72,41 @@ class VisualisationHelper
 
             $label = $rect->getLabel();
             if ($label != null) {
-                $tx = $topLeftX + (($bottomRightX -$topLeftX) / 2) - $cx; // - 60;
-                $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy; // - 60;
+                $tx = $topLeftX + (($bottomRightX -$topLeftX) / 2) - $cx;
+                $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy;
                 // set font color
                 if (isset($opts['fontColour'])) {
                     $draw->setStrokeColor(new \ImagickPixel($opts['fontColour']));
                     $draw->setFillColor(new \ImagickPixel($opts['fontColour']));
                 }
+                // Word wrap the label within the allowed width
+                $lines = explode("\n", $label);
+                $maxWidth = $rect->getWidth() - ($labelMargin * 2);
+                for ($i = 0 ; $i < count($lines) ; $i ++) {
+                    $metrics = $imagick->queryFontMetrics($draw, $lines[$i]);
+                    $curWidth = $metrics['textWidth'];
+                    if ($curWidth > $maxWidth) {
+                        // Need to split this line, if possible.. iterate until we find words that will fit
+                        $curLine = $lines[$i];
+                        while ($curWidth > 0 && $curWidth > $maxWidth) {
+                            $curLine = substr($curLine, 0, strrpos($curLine, ' '));
+                            $metrics = $imagick->queryFontMetrics($draw, $curLine);
+                            $curWidth = $metrics['textWidth'];
+                        }
+                        // Check for no words fitting nicely
+                        if (strlen($curLine) == 0) {
+                            // If there really aren't any spaces, give up, otherwise take the first long word as this line candidate
+                            if (strpos($lines[$i], ' ') == false) {
+                                continue; // Give up and move on to the next line.
+                            } else {
+                                $curLine = substr($lines[$i], 0, strpos($lines[$i], ' '));
+                            }
+                        }
+                        array_splice($lines, $i + 1, 0, substr($lines[$i], strlen($curLine) + 1));
+                        $lines[$i] = $curLine;
+                    }
+                }
+                $label = join("\n", $lines);
                 $draw->annotation($tx, $ty, $label);
                 // reset stroke and fill color
                 $draw->setStrokeColor($cutStrokeColour);
