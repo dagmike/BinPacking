@@ -34,7 +34,7 @@ class VisualisationHelper
         }
         $labelMargin = isset($opts['labelMargin']) ? $opts['labelMargin'] : 20;
 
-        $draw->setGravity(\Imagick::GRAVITY_CENTER); //NORTH); //GRAVITY_NORTHWEST);
+        $draw->setGravity(\Imagick::GRAVITY_CENTER);
         $cx = $bin->getBinWidth() / 2;
         $cy = $bin->getBinHeight() / 2;
         $margin = 10;
@@ -54,6 +54,7 @@ class VisualisationHelper
             $bottomRightX = $topLeftX + $rect->getWidth();
             $bottomRightY = $topLeftY + $rect->getHeight();
 
+            echo "Render rect: $topLeftX,$topLeftY -> $bottomRightX,$bottomRightY\n";
             $draw->rectangle(
                 $topLeftX,
                 $topLeftY,
@@ -72,8 +73,9 @@ class VisualisationHelper
 
             $label = $rect->getLabel();
             if ($label != null) {
-                $tx = $topLeftX + (($bottomRightX -$topLeftX) / 2) - $cx;
-                $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy;
+                $tx = $topLeftX + (($bottomRightX - $topLeftX) / 2) - $cx - $margin;
+                $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy - $margin;
+                echo "Render label '$label' at: $tx,$ty\n";
                 // set font color
                 if (isset($opts['fontColour'])) {
                     $draw->setStrokeColor(new \ImagickPixel($opts['fontColour']));
