@@ -54,7 +54,6 @@ class VisualisationHelper
             $bottomRightX = $topLeftX + $rect->getWidth();
             $bottomRightY = $topLeftY + $rect->getHeight();
 
-            echo "Render rect: $topLeftX,$topLeftY -> $bottomRightX,$bottomRightY\n";
             $draw->rectangle(
                 $topLeftX,
                 $topLeftY,
@@ -75,7 +74,6 @@ class VisualisationHelper
             if ($label != null) {
                 $tx = $topLeftX + (($bottomRightX - $topLeftX) / 2) - $cx - $margin;
                 $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy - $margin;
-                echo "Render label '$label' at: $tx,$ty\n";
                 // set font color
                 if (isset($opts['fontColour'])) {
                     $draw->setStrokeColor(new \ImagickPixel($opts['fontColour']));
