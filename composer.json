@@ -1,6 +1,6 @@
 {
     "name": "dagmike/bin-packing",
-    "version": "1.6.2",
+    "version": "1.7.1",
     "description": "2D bin packing PHP implementation",
     "type": "library",
     "license": "MIT",
