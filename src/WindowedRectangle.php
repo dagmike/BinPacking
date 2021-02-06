@@ -26,6 +26,13 @@ class WindowedRectangle extends Rectangle
     private $leftBorder;
 
     /**
+     * Should the space inside the window be treated as free?
+     *
+     * @var bool
+     */
+    private $isHollow;
+
+    /**
      * Border from the window that cannot be used
      */
     public const INNERBORDER = 15;
@@ -39,6 +46,9 @@ class WindowedRectangle extends Rectangle
      * @param int $leftBorder Margin from the left of the outer rect
      * @param int|null $topBorder Margin from the top of the outer rect
      * @param int|null $rightBorder Margin from the right of the outer rect
+     * @param bool $isHollow Should the algorithm consider the inside portion of this rect to allow other rects to pack into it?
+     * @param string $label String to render in the center of the rect (may contain "\n" for multiline)
+     * @param array $data Arbitrary data you can examine later to identify packed rects
      */
     public function __construct(
         int $width,
@@ -46,13 +56,17 @@ class WindowedRectangle extends Rectangle
         int $bottomBorder,
         int $leftBorder,
         int $topBorder,
-        int $rightBorder
+        int $rightBorder,
+        bool $isHollow = true,
+        string $label = null,
+        array $data = null
     ) {
-        parent::__construct($width, $height);
+        parent::__construct($width, $height, $label, $data);
         $this->bottomBorder = $bottomBorder;
         $this->leftBorder = $leftBorder;
         $this->topBorder = $topBorder;
         $this->rightBorder = $rightBorder;
+        $this->isHollow = $isHollow;
 
         if ($this->rightBorder) {
             $windowWidth = $width - ($this->leftBorder + $this->rightBorder);
@@ -117,6 +131,16 @@ class WindowedRectangle extends Rectangle
     public function getRightBorder() : int
     {
         return $this->rightBorder ?? $this->leftBorder;
+    }
+
+    /**
+     * Gets the isHollow attribute
+     *
+     * @return bool
+     */
+    public function getIsHollow() : int
+    {
+        return $this->isHollow;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace BinPacking;
 
-use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft, BestShortSideFit};
+use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft, BestShortSideFit, Linear};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -189,7 +189,8 @@ class RectangleBinPack
         $usedSurfaceArea = 0;
         foreach ($this->usedRectangles as $usedRect) {
             $usedSurfaceArea += $usedRect->getWidth() * $usedRect->getHeight();
-            if (get_class($usedRect) == 'BinPacking\WindowedRectangle') {
+            if (get_class($usedRect) == 'BinPacking\WindowedRectangle' &&
+                $usedRect->getIsHollow()) {
                 $usedSurfaceArea -= $usedRect->getWindow()->getWidth() * $usedRect->getWindow()->getHeight();
             }
         }
@@ -226,6 +227,10 @@ class RectangleBinPack
 
             case 'RectBestShortSideFit':
                 $newNode = BestShortSideFit::findNewPosition($this, $rect, $score1, $score2);
+                break;
+
+            case 'RectLinear':
+                $newNode = Linear::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
             default:
@@ -346,6 +351,10 @@ class RectangleBinPack
                 $newNode = BestShortSideFit::findNewPosition($this, $rect, $score1, $score2);
                 break;
 
+            case 'RectLinear':
+                $newNode = Linear::findNewPosition($this, $rect, $score1, $score2);
+                break;
+    
             default:
                 throw new \InvalidArgumentException("Method {$method} not recognised.");
         }
@@ -418,7 +427,8 @@ class RectangleBinPack
         }
 
         // Check if the used node has a window
-        if (get_class($usedNode) == "BinPacking\WindowedRectangle") {
+        if (get_class($usedNode) == "BinPacking\WindowedRectangle" &&
+            $usedNode->getIsHollow()) {
             $newNode = RectangleFactory::fromRectangle($usedNode->getWindow());
             $newNode->setX($usedNode->getX() + $usedNode->getLeftBorder() + WindowedRectangle::INNERBORDER);
             $newNode->setY($usedNode->getY() + $usedNode->getBottomBorder() + WindowedRectangle::INNERBORDER);
