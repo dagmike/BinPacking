@@ -59,9 +59,11 @@ class WindowedRectangle extends Rectangle
         int $rightBorder,
         bool $isHollow = true,
         string $label = null,
-        array $data = null
+        array $data = null,
+        string $allowFlip = FlipType::AllowFlip,
+        array $visOptsOverrides = null
     ) {
-        parent::__construct($width, $height, $label, $data);
+        parent::__construct($width, $height, $label, $data, $allowFlip, $visOptsOverrides);
         $this->bottomBorder = $bottomBorder;
         $this->leftBorder = $leftBorder;
         $this->topBorder = $topBorder;

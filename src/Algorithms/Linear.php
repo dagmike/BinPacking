@@ -5,6 +5,7 @@ namespace BinPacking\Algorithms;
 use BinPacking\{RectangleBinPack, Rectangle};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
+use BinPacking\FlipType;
 
 class Linear
 {
@@ -19,7 +20,8 @@ class Linear
         $bestY = RectangleHelper::MAXINT;
 
         $bestNode = RectangleFactory::fromRectangle($rectangle);
-        if ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight()) {
+        if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
+            ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
             $bestNode->rotate();
         }
 

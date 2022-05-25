@@ -2,6 +2,8 @@
 
 namespace BinPacking;
 
+use BinPacking\FlipType;
+
 class Rectangle
 {
     /**
@@ -39,6 +41,10 @@ class Rectangle
      */
     protected $label;
 
+    protected $allowFlip;
+
+    protected $visOptsOverrides;
+
     /**
      * Indicates whether the rotate function was called
      *
@@ -54,7 +60,8 @@ class Rectangle
      * @param string $label String to render in the center of the rect (may contain "\n" for multiline)
      * @param array $data Arbitrary data you can examine later to identify packed rects
      */
-    public function __construct(int $width, int $height, string $label = null, $data = null)
+    public function __construct(int $width, int $height, string $label = null,
+        $data = null, $allowFlip = FlipType::AllowFlip, $visOptsOverrides = null)
     {
         $this->width = $width;
         $this->height = $height;
@@ -62,6 +69,8 @@ class Rectangle
         $this->yPos = 0;
         $this->label = $label;
         $this->data = $data;
+        $this->allowFlip = $allowFlip;
+        $this->visOptsOverrides = $visOptsOverrides;
     }
 
     /**
@@ -201,6 +210,46 @@ class Rectangle
     public function setData(array $data) : void
     {
         $this->data = $data;
+    }
+
+    /**
+     * Sets this rectangle's flip type.
+     *
+     * @param string $allowFlip
+     * @return void
+     */
+    public function setAllowFlip(string $allowFlip) : void {
+        $this->allowFlip = $allowFlip;
+    }
+
+    /**
+     * Returns this rectangle's flip type.
+     *
+     * @return string
+     */
+    public function getAllowFlip() : string {
+        return $this->allowFlip;
+    }
+
+    /**
+     * Get the visualisation options overrides for this rect
+     *
+     * @return array
+     */
+    public function getVisOptsOverrides() : ?array
+    {
+        return $this->visOptsOverrides;
+    }
+
+    /**
+     * Set the visualisation options overrides for this rect
+     *
+     * @param array $visOptsOverrides
+     * @return void
+     */
+    public function setVisOptsOverrides(array $visOptsOverrides) : void
+    {
+        $this->visOptsOverrides = $visOptsOverrides;
     }
 
     /**

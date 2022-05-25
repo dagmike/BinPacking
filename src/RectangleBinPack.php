@@ -5,6 +5,7 @@ namespace BinPacking;
 use BinPacking\Algorithms\{BestAreaFit, BestLongSideFit, BottomLeft, BestShortSideFit, Linear};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
+use BinPacking\FlipType;
 
 class RectangleBinPack
 {
@@ -25,7 +26,7 @@ class RectangleBinPack
     /**
      * Allow 90 degree rotation or not
      *
-     * @var bool
+     * @var FlipType
      */
     private $allowFlip;
 
@@ -67,7 +68,16 @@ class RectangleBinPack
      * @param int $height Height of the bin
      * @param boolean $flip   Allow rotation of the items to pack
      */
-    public function __construct(int $width, int $height, bool $flip = true)
+    public function __construct(int $width, int $height, $flip = FlipType::AllowFlip)
+    {
+        $realFlip = $flip;
+        if (gettype($flip) == 'boolean') {
+            $realFlip = $flip ? FlipType::AllowFlip : FlipType::NoFlip;
+        }
+        $this->realConstruct($width, $height, $realFlip);
+    }
+
+    public function realConstruct(int $width, int $height, string $flip)
     {
         $this->binWidth = $width;
         $this->binHeight = $height;
@@ -93,6 +103,18 @@ class RectangleBinPack
 
         $this->freeRectangles = [$initialFree];
         return $this;
+    }
+
+    /**
+     * Reset this bin to be empty.
+     *
+     * @return void
+     */
+    public function reset() {
+        $this->usedRectangles = [];
+        $this->freeRectangles = [];
+        $this->cantPack = [];
+        $this->init();
     }
 
     /**
@@ -144,7 +166,7 @@ class RectangleBinPack
      *
      * @return boolean
      */
-    public function isFlipAllowed() : bool
+    public function isFlipAllowed() : string
     {
         return $this->allowFlip;
     }
