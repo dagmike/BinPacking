@@ -26,7 +26,7 @@ class RectangleFactory
             );
         } else {
             $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight(),
-                $rectangle->getLabel(), $rectangle->getData(), $rectangle->getVisOptsOverrides());
+                $rectangle->getLabel(), $rectangle->getData(), $rectangle->getAllowFlip(), $rectangle->getVisOptsOverrides());
         }
 
         $rect->setX($rectangle->getX());

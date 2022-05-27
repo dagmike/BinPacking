@@ -2,7 +2,7 @@
 
 namespace BinPacking\Algorithms;
 
-use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\{RectangleBinPack, Rectangle, FlipType};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -35,7 +35,8 @@ class BestShortSideFit
                 }
             }
 
-            if ($bin->isFlipAllowed() && $freeRect->getWidth() >= $rectangle->getHeight() && $freeRect->getHeight() >= $rectangle->getWidth()) {
+            if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
+                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
                 $leftoverHoriz = abs($freeRect->getWidth() - $rectangle->getHeight());
                 $leftoverVert = abs($freeRect->getHeight() - $rectangle->getWidth());
                 $shortSideFit = min($leftoverHoriz, $leftoverVert);

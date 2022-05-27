@@ -168,7 +168,8 @@ class RectangleBinPack
      */
     public function isFlipAllowed() : string
     {
-        return $this->allowFlip;
+        return $this->allowFlip == FlipType::AllowFlip ||
+        $this->allowFlip == FlipType::ForceFlip;
     }
 
     /**

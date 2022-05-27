@@ -2,10 +2,9 @@
 
 namespace BinPacking\Algorithms;
 
-use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\{RectangleBinPack, Rectangle, FlipType};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
-use BinPacking\FlipType;
 
 class Linear
 {

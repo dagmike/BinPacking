@@ -2,7 +2,7 @@
 
 namespace BinPacking\Algorithms;
 
-use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\{RectangleBinPack, Rectangle, FlipType};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -30,7 +30,8 @@ class BottomLeft
                 }
             }
 
-            if ($bin->isFlipAllowed() && $freeRect->getWidth() >= $rectangle->getHeight() && $freeRect->getHeight() >= $rectangle->getWidth()) {
+            if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
+                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
                 $topSideY = $freeRect->getY() + $rectangle->getWidth();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
                     $bestNode = RectangleFactory::fromRectangle($rectangle);
