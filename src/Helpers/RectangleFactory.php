@@ -28,6 +28,7 @@ class RectangleFactory
             $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight(),
                 $rectangle->getLabel(), $rectangle->getData(), $rectangle->getAllowFlip(), $rectangle->getVisOptsOverrides());
         }
+        $rect->setIsRotated($rectangle->getIsRotated());
 
         $rect->setX($rectangle->getX());
         $rect->setY($rectangle->getY());

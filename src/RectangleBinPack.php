@@ -14,52 +14,52 @@ class RectangleBinPack
      *
      * @var int
      */
-    private $binWidth;
+    protected $binWidth;
     
     /**
      * Height of the bin to pack into
      *
      * @var int
      */
-    private $binHeight;
+    protected $binHeight;
 
     /**
      * Allow 90 degree rotation or not
      *
      * @var FlipType
      */
-    private $allowFlip;
+    protected $allowFlip;
 
     /**
      * Used rectangles array
      *
      * @var Rectangle[]
      */
-    private $usedRectangles;
+    protected $usedRectangles;
     
     /**
      * Used rectangles array
      *
      * @var Rectangle[]
      */
-    private $freeRectangles;
+    protected $freeRectangles;
 
     /**
      * Array of rectangles unable to pack in the bin
      *
      * @var Rectangle[]
      */
-    private $cantPack = [];
+    protected $cantPack = [];
 
     /**
      * Bottom border of the bin that cannot be used
      */
-    private $bottomBorder;
+    protected $bottomBorder;
 
     /**
      * Left border of thebin that cannot be used
      */
-    private $leftBorder;
+    protected $leftBorder;
 
     /**
      * Construct the bin for packing into
@@ -71,6 +71,7 @@ class RectangleBinPack
     public function __construct(int $width, int $height, $flip = FlipType::AllowFlip)
     {
         $realFlip = $flip;
+        // Allow passing boolean or FlipType. Remove when backcompat supporting bool no longer required.
         if (gettype($flip) == 'boolean') {
             $realFlip = $flip ? FlipType::AllowFlip : FlipType::NoFlip;
         }

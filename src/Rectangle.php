@@ -41,9 +41,26 @@ class Rectangle
      */
     protected $label;
 
+    /**
+     * Indicates whether flipping (rotation) of this rectangle is allowed or forced.
+     *
+     * @var FlipType
+     */
     protected $allowFlip;
 
+    /**
+     * Overrides used for this rect when visualising the bin.
+     *
+     * @var string
+     */
     protected $visOptsOverrides;
+
+    /**
+     * Arbitrary data you can examine later to identify packed rects.
+     *
+     * @var array
+     */
+    protected $data;
 
     /**
      * Indicates whether the rotate function was called
@@ -263,7 +280,18 @@ class Rectangle
     }
 
     /**
+     * Sets whether the rotate function was used (used by RectangleFactory)
+     *
+     * @return void
+     */
+    public function setIsRotated(bool $isRotated) : void
+    {
+        $this->isRotated = $isRotated;
+    }
+
+    /**
      * Rotate the rectangle
+     * If the rectangle was already rotated, it becomes non-rotated.
      *
      * @return void
      */
@@ -274,6 +302,21 @@ class Rectangle
 
         $this->height = $newHeight;
         $this->width = $newWidth;
-        $this->isRotated = true;
+        $this->isRotated = !$this->isRotated;
+    }
+
+    /**
+     * Resets rotation back to false if it was previously rotated.
+     *
+     * @return void
+     */
+    public function resetRotation() : void
+    {
+        if ($this->isRotated) {
+            $tmp = $this->height;
+            $this->height = $this->width;
+            $this->width = $tmp;
+            $this->isRotated = false;
+        }
     }
 }

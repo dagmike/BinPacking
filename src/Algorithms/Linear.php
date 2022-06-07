@@ -26,10 +26,10 @@ class Linear
 
         foreach ($bin->getFreeRectangles() as $freeRect) {
             if ($freeRect->getY() == 0) {
-                if ($freeRect->getWidth() >= $rectangle->getWidth()) {
+                if ($freeRect->getWidth() >= $bestNode->getWidth()) {
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
-                    $bestX = $freeRect->getWidth() - $rectangle->getWidth();
+                    $bestX = $freeRect->getWidth() - $bestNode->getWidth();
                     return $bestNode;
                 }
             }
