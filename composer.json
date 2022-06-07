@@ -1,6 +1,6 @@
 {
     "name": "dagmike/bin-packing",
-    "version": "1.7.1",
+    "version": "1.7.2",
     "description": "2D bin packing PHP implementation",
     "type": "library",
     "license": "MIT",
@@ -12,6 +12,10 @@
         {
             "name": "Shawn Welch",
             "email": "101164+shrimpwagon@users.noreply.github.com"
+        },
+        {
+            "name": "Nick Fenwick",
+            "email": "neek@nickfenwick.com"
         }
     ],
     "require": {
