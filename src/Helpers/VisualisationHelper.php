@@ -26,13 +26,6 @@ class VisualisationHelper
         $textFillColour = new \ImagickPixel('rgb(0, 0, 0)');
         $textDraw->setStrokeColor($textStrokeColour);
         $textDraw->setFillColor($textFillColour);
-        if (isset($opts['font'])) {
-            $draw->setFont($opts['font']);
-        }
-        if (isset($opts['fontSize'])) {
-            $draw->setFontSize($opts['fontSize']);
-        }
-        $labelMargin = isset($opts['labelMargin']) ? $opts['labelMargin'] : 20;
 
         $draw->setGravity(\Imagick::GRAVITY_CENTER);
         $cx = $bin->getBinWidth() / 2;
@@ -49,6 +42,17 @@ class VisualisationHelper
         $draw->setStrokeDashOffset(5);
 
         foreach ($bin->getUsedRectangles() as $rect) {
+            $rectVisOptsOverrides = $rect->getVisOptsOverrides();
+            $rectVisOpts = array_merge($opts, $rectVisOptsOverrides != null ? $rectVisOptsOverrides : []);
+
+            if (isset($rectVisOpts['font'])) {
+                $draw->setFont($rectVisOpts['font']);
+            }
+            if (isset($rectVisOpts['fontSize'])) {
+                $draw->setFontSize($rectVisOpts['fontSize']);
+            }
+            $labelMargin = isset($rectVisOpts['labelMargin']) ? $rectVisOpts['labelMargin'] : 20;
+
             $topLeftX = $margin + $rect->getX();
             $topLeftY = $margin + $bin->getBinHeight() - $rect->getY() - $rect->getHeight();
             $bottomRightX = $topLeftX + $rect->getWidth();
@@ -75,9 +79,9 @@ class VisualisationHelper
                 $tx = $topLeftX + (($bottomRightX - $topLeftX) / 2) - $cx - $margin;
                 $ty = $topLeftY + (($bottomRightY - $topLeftY) / 2) - $cy - $margin;
                 // set font color
-                if (isset($opts['fontColour'])) {
-                    $draw->setStrokeColor(new \ImagickPixel($opts['fontColour']));
-                    $draw->setFillColor(new \ImagickPixel($opts['fontColour']));
+                if (isset($rectVisOpts['fontColour'])) {
+                    $draw->setStrokeColor(new \ImagickPixel($rectVisOpts['fontColour']));
+                    $draw->setFillColor(new \ImagickPixel($rectVisOpts['fontColour']));
                 }
                 // Word wrap the label within the allowed width
                 $lines = explode("\n", $label);

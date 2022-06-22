@@ -20,18 +20,15 @@ class RectangleFactory
                 $rectangle->getRightBorder(),
                 $rectangle->getIsHollow(),
                 $rectangle->getLabel(),
-                $rectangle->getData()
-            );
-        } else if (get_class($rectangle) == 'BinPacking\RectangleWithMargin') {
-            $rect = new RectangleWithMargin(
-                $rectangle->getWidth(),
-                $rectangle->getHeight(),
-                $rectangle->getLabel(),
-                $rectangle->getMargin()
+                $rectangle->getData(),
+                $rectangle->getAllowFlip(),
+                $rectangle->getVisOptsOverrides()
             );
         } else {
-            $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight(), $rectangle->getLabel(), $rectangle->getData());
+            $rect = new Rectangle($rectangle->getWidth(), $rectangle->getHeight(),
+                $rectangle->getLabel(), $rectangle->getData(), $rectangle->getAllowFlip(), $rectangle->getVisOptsOverrides());
         }
+        $rect->setIsRotated($rectangle->getIsRotated());
 
         $rect->setX($rectangle->getX());
         $rect->setY($rectangle->getY());

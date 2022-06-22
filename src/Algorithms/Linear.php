@@ -2,7 +2,7 @@
 
 namespace BinPacking\Algorithms;
 
-use BinPacking\{RectangleBinPack, Rectangle};
+use BinPacking\{RectangleBinPack, Rectangle, FlipType};
 use BinPacking\Helpers\RectangleFactory;
 use BinPacking\Helpers\RectangleHelper;
 
@@ -19,15 +19,17 @@ class Linear
         $bestY = RectangleHelper::MAXINT;
 
         $bestNode = RectangleFactory::fromRectangle($rectangle);
-        if ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight()) {
+        if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
+            ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
             $bestNode->rotate();
         }
 
         foreach ($bin->getFreeRectangles() as $freeRect) {
             if ($freeRect->getY() == 0) {
-                if ($freeRect->getWidth() >= $rectangle->getWidth()) {
+                if ($freeRect->getWidth() >= $bestNode->getWidth()) {
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
+                    $bestX = $freeRect->getWidth() - $bestNode->getWidth();
                     // Favour the tallest items first.
                     $bestY = $freeRect->getHeight() - $rectangle->getHeight();
                     return $bestNode;
