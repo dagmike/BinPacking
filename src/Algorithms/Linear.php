@@ -30,6 +30,8 @@ class Linear
                     $bestNode->setX($freeRect->getX());
                     $bestNode->setY($freeRect->getY());
                     $bestX = $freeRect->getWidth() - $bestNode->getWidth();
+                    // Favour the tallest items first.
+                    $bestY = $freeRect->getHeight() - $rectangle->getHeight();
                     return $bestNode;
                 }
             }
