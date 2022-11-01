@@ -36,9 +36,9 @@ class BestAreaFit
                 }
             }
 
-            if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
-                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
-
+            $tryFlip = $rectangle->getAllowFlip() == FlipType::ForceFlip ||
+                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight());
+            if ($tryFlip && ($freeRect->getWidth() >= $rectangle->getHeight() && $freeRect->getHeight() >= $rectangle->getWidth())) {
                 $leftoverHoriz = abs($freeRect->getWidth() - $rectangle->getHeight());
                 $leftoverVert = abs($freeRect->getHeight() - $rectangle->getWidth());
                 $shortSideFit = min($leftoverHoriz, $leftoverVert);
