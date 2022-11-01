@@ -30,8 +30,9 @@ class BottomLeft
                 }
             }
 
-            if ($rectangle->getAllowFlip() == FlipType::ForceFlip ||
-                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight())) {
+            $tryFlip = $rectangle->getAllowFlip() == FlipType::ForceFlip ||
+                ($bin->isFlipAllowed() && $rectangle->getWidth() > $rectangle->getHeight());
+            if ($tryFlip && ($freeRect->getWidth() >= $rectangle->getHeight() && $freeRect->getHeight() >= $rectangle->getWidth())) {
                 $topSideY = $freeRect->getY() + $rectangle->getWidth();
                 if ($topSideY < $bestY || ($topSideY == $bestY && $freeRect->getX() < $bestX)) {
                     $bestNode = RectangleFactory::fromRectangle($rectangle);

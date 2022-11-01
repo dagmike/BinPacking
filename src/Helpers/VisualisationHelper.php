@@ -51,6 +51,7 @@ class VisualisationHelper
             if (isset($rectVisOpts['fontSize'])) {
                 $draw->setFontSize($rectVisOpts['fontSize']);
             }
+            $draw->setFillColor(isset($rectVisOpts['fillColour']) ? $rectVisOpts['fillColour'] : $fillColour);
             $labelMargin = isset($rectVisOpts['labelMargin']) ? $rectVisOpts['labelMargin'] : 20;
 
             $topLeftX = $margin + $rect->getX();
